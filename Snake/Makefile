@@ -6,7 +6,7 @@ SRC		:= src
 INCLUDE	:= include
 LIB		:= lib
 
-LIBRARIES	:= -lSDL2 -lSDL2main
+LIBRARIES	:= -lSDL2 -lSDL2main 
 EXECUTABLE	:= snake
 
 

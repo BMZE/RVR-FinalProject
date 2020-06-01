@@ -1,14 +1,11 @@
 #include "Game.h"
 #include "Player.h"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
-#include "Renderer.h"
+
 
 Game::Game()
 {
-    _players.resize(1);
-    _players.push_back(new Player(50, 50));
-    test = Renderer::LoadImage("bin/Assets/Red.bmp");
+    _players.reserve(1);
+    _players.push_back(new Player(50, 50, "bin/Assets/Red.bmp"));
 }
 
 void Game::Update()
@@ -17,8 +14,9 @@ void Game::Update()
 }
 
 void Game::Render()
-{
-    SDL_RenderCopy(Renderer::GetRenderer(), test, NULL, NULL);
+{   
+    for(size_t i = 0; i < _players.size(); i++)
+        _players[i]->Render();
 }
 
 void Game::HandleInput()
@@ -28,6 +26,5 @@ void Game::HandleInput()
 
 Game::~Game()
 {
-    delete test;
-    test = nullptr;
+   //release players
 }

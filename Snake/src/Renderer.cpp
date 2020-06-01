@@ -45,19 +45,31 @@ void Renderer::Clear(int color)
     SDL_RenderClear(_pRenderer);
 }
 
+//Loads and returns an image texture
 SDL_Texture* Renderer::LoadImage(const char* path)
 {
-    SDL_Surface* image = SDL_LoadBMP(path);
+    SDL_Surface* image = SDL_LoadBMP(path); //load file
     
     if(image == nullptr)
         std::cout << "Unable to load image! \nSDL_Error: " << SDL_GetError() << '\n';
     
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(_pRenderer, image);
-    SDL_FreeSurface(image); 
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(_pRenderer, image); //create texture
+
+    if(texture == nullptr)
+        std::cout << "Unable to create texture! \nSDL_Error: " << SDL_GetError() << '\n';
+
+    SDL_FreeSurface(image); //free temp surface
+    image = nullptr;
 
     return texture;
 }
 
+SDL_Renderer* Renderer::GetRenderer()
+{
+    return _pRenderer; 
+}
+
+//Release SDL renderer resources
 void Renderer::Release()
 {
     SDL_DestroyRenderer(_pRenderer);

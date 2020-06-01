@@ -42,7 +42,7 @@ public:
     /**
      * Returns the SDL renderer
      */
-    static inline SDL_Renderer* GetRenderer() { return _pRenderer; };
+    static SDL_Renderer* GetRenderer(); 
 
     /**
      * Loads and returns an image texture
