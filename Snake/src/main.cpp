@@ -1,6 +1,12 @@
+#include <SDL2/SDL.h>
 #include <iostream>
 
 int main() 
 {
-    std::cout << "Hello world!" << '\n';
+    SDL_Init(SDL_INIT_EVERYTHING);
+    std::cout << "Hello world!\n";
+
+    SDL_Quit();
+
+    return 0;
 }
