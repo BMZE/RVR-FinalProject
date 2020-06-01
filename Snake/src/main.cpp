@@ -1,12 +1,16 @@
-#include <SDL2/SDL.h>
+#include "Platform.h"
 #include <iostream>
+
+
 
 int main() 
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    std::cout << "Hello world!\n";
+    if(!Platform::Init())
+        return 1;
 
-    SDL_Quit();
+    //game loop
+    
 
+    Platform::Release();
     return 0;
 }
