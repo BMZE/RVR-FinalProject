@@ -9,7 +9,11 @@ int main()
         return 1;
 
     //game loop
-    
+
+    while(Platform::Input())
+    {
+
+    }
 
     Platform::Release();
     return 0;

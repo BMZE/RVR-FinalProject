@@ -5,8 +5,8 @@
 #pragma region  STATIC ATTRIBUTES
 
 SDL_Window* Platform::pWindow = nullptr;
-const int Platform::SCREEN_WIDTH = 400;
-const int Platform::SCREEN_HEIGHT =  400;
+const int Platform::SCREEN_WIDTH = 800;
+const int Platform::SCREEN_HEIGHT = 600;
 #pragma endregion
 
 #pragma region PUBLIC METHODS
@@ -35,9 +35,21 @@ bool Platform::Init()
     return true;
 }
 
-void Platform::Input()
+bool Platform::Input()
 {
+    SDL_Event e;
 
+    while(SDL_PollEvent(&e))
+    {
+        //Exits program when pressing ESC or X button
+        if(e.key.keysym.sym == SDLK_ESCAPE || e.type == SDL_QUIT)
+        {
+            SDL_Quit();
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Platform::Release()

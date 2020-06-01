@@ -12,7 +12,7 @@ public:
      */
     bool static Init();
 
-    void static Input();
+    bool static Input();
 
     /**
      * Releases the resources used by SDL
