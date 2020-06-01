@@ -12,6 +12,9 @@ public:
      */
     bool static Init();
 
+    /**
+     * Registers user input
+     */
     bool static Input();
 
     /**
@@ -19,12 +22,17 @@ public:
      */
     void static Release(); 
 
+    /**
+     * Returns sdl window
+     */
+    inline static SDL_Window* GetWindow() { return _pWindow; };
+
 private:
 
     //Screen width & height
     static const int SCREEN_WIDTH;
     static const int SCREEN_HEIGHT; 
 
-    static SDL_Window* pWindow;
+    static SDL_Window* _pWindow;
 
 };

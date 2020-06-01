@@ -4,7 +4,7 @@
 
 #pragma region  STATIC ATTRIBUTES
 
-SDL_Window* Platform::pWindow = nullptr;
+SDL_Window* Platform::_pWindow = nullptr;
 const int Platform::SCREEN_WIDTH = 800;
 const int Platform::SCREEN_HEIGHT = 600;
 #pragma endregion
@@ -21,11 +21,11 @@ bool Platform::Init()
     }
     else
     {
-        pWindow = SDL_CreateWindow("Snake", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+        _pWindow = SDL_CreateWindow("Snake", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     }
     
-    if(pWindow == nullptr)
+    if(_pWindow == nullptr)
     {
         std::cout << "Window could not be created! \nSDL_Error: " << SDL_GetError() << '\n';
         return false;
@@ -54,8 +54,8 @@ bool Platform::Input()
 
 void Platform::Release()
 {
-    SDL_DestroyWindow(pWindow);
-    pWindow = nullptr;
+    SDL_DestroyWindow(_pWindow);
+    _pWindow = nullptr;
 }
 
 #pragma endregion
