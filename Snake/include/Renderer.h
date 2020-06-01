@@ -2,7 +2,7 @@
 #define _H_Renderer_H_
 
 class SDL_Renderer;
-class SDL_Surface;
+class SDL_Texture;
 
 class Renderer 
 {
@@ -40,14 +40,18 @@ public:
     static inline int GetScreenHeight(){ return _screenHeight; };
 
     /**
+     * Returns the SDL renderer
+     */
+    static inline SDL_Renderer* GetRenderer() { return _pRenderer; };
+
+    /**
      * Loads and returns an image texture
      */
-    static SDL_Surface* LoadImage(const char* path);
+    static SDL_Texture* LoadImage(const char* path);
 
 private:
 
     static SDL_Renderer* _pRenderer;
-    static SDL_Surface* _screenSurface;
     static int _screenWidth;
     static int _screenHeight;
 };

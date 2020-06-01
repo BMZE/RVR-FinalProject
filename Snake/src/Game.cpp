@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
 #include "Renderer.h"
 
 Game::Game()
@@ -17,7 +18,7 @@ void Game::Update()
 
 void Game::Render()
 {
-    
+    SDL_RenderCopy(Renderer::GetRenderer(), test, NULL, NULL);
 }
 
 void Game::HandleInput()
@@ -27,5 +28,6 @@ void Game::HandleInput()
 
 Game::~Game()
 {
-    delete (test);
+    delete test;
+    test = nullptr;
 }
