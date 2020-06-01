@@ -11,20 +11,21 @@ int main()
     if(!Renderer::Init())
         return 1;
 
-    Game game;
+    Game game; 
     
-
     //game loop
     while(Platform::Input())
     {
         game.HandleInput();  //register input
-        game.Update(); //update objects
 
+        game.Update(); //update objects
+        
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
         Renderer::Present(); //display the new frame buffer
     }
 
+    //Release SDL
     Renderer::Release();
     Platform::Release();
         

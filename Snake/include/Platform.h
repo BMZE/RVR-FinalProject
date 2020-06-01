@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _H_Platform_H_
+#define _H_Platform_H_
 
 class SDL_Window;
 
@@ -36,3 +37,4 @@ private:
     static SDL_Window* _pWindow;
 
 };
+#endif
