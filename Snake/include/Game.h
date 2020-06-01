@@ -3,6 +3,7 @@
 #include <vector>
 
 class Player;
+class SDL_Surface;
 
 class Game 
 {
@@ -19,6 +20,6 @@ public:
 private: 
 
     std::vector<Player*> _players;
-
+    SDL_Surface* test;
 };
 #endif

@@ -46,9 +46,9 @@ void Renderer::Clear(int color)
     SDL_RenderClear(_pRenderer);
 }
 
-SDL_Surface* Renderer::LoadImage(std::string* path)
+SDL_Surface* Renderer::LoadImage(const char* path)
 {
-    SDL_Surface* image = SDL_LoadBMP(path->c_str());
+    SDL_Surface* image = SDL_LoadBMP(path);
     
     if(image == nullptr)
         std::cout << "Unable to load image! \nSDL_Error: " << SDL_GetError() << '\n';

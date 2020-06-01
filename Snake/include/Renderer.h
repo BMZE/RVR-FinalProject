@@ -1,6 +1,5 @@
 #ifndef _H_Renderer_H_
 #define _H_Renderer_H_
-#include <string>
 
 class SDL_Renderer;
 class SDL_Surface;
@@ -43,7 +42,7 @@ public:
     /**
      * Loads and returns an image texture
      */
-    static SDL_Surface* LoadImage(std::string* path);
+    static SDL_Surface* LoadImage(const char* path);
 
 private:
 
