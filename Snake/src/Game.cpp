@@ -5,7 +5,7 @@
 Game::Game()
 {
     _players.reserve(1);
-    _players.push_back(new Player(50, 50, "bin/Assets/Red.bmp"));
+    _players.push_back(new Player(50, 50, 20, 20, "bin/Assets/Red.bmp"));
 }
 
 void Game::Update()
