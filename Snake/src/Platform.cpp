@@ -1,15 +1,18 @@
 #include "Platform.h"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "InputListener.h"
 
 #pragma region  STATIC ATTRIBUTES
 
 SDL_Window* Platform::_pWindow = nullptr;
 const int Platform::SCREEN_WIDTH = 800;
 const int Platform::SCREEN_HEIGHT = 600;
+std::list<InputListener*> Platform::_listeners;
+
 #pragma endregion
 
-#pragma region PUBLIC METHODS
+#pragma region PLATFORM SETUP
 
 //Creates SDL window
 bool Platform::Init()
@@ -44,6 +47,7 @@ bool Platform::Input()
         //Exits program when pressing ESC or X button
         if(e.key.keysym.sym == SDLK_ESCAPE || e.type == SDL_QUIT)
         {
+            //TODO: SEND QUIT TO SERVER
             SDL_Quit();
             return false;
         }
@@ -57,5 +61,27 @@ void Platform::Release()
     SDL_DestroyWindow(_pWindow);
     _pWindow = nullptr;
 }
+
+#pragma endregion
+
+#pragma region EMITTER METHODS
+
+    void Platform::AddListener(InputListener* listener)
+    {
+        _listeners.push_back(listener);
+    }
+
+    void Platform::RemoveListener(InputListener* listener)
+    {
+        _listeners.remove(listener);
+    }
+
+    void Platform::SendMessage(const SDL_Event& e)
+    {
+        for(InputListener* listener : _listeners)
+        {  
+            listener->OnEvent(e)
+        }
+    }
 
 #pragma endregion
