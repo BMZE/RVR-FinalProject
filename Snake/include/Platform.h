@@ -4,7 +4,7 @@
 
 class SDL_Window;
 class InputListener;
-class SDL_Event;
+union SDL_Event;
 
 
 class Platform 

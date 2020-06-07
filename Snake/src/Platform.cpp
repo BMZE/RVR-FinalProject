@@ -1,6 +1,7 @@
 #include "Platform.h"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <algorithm>
 #include "InputListener.h"
 
 #pragma region  STATIC ATTRIBUTES
@@ -51,6 +52,11 @@ bool Platform::Input()
             SDL_Quit();
             return false;
         }
+        else
+        {
+            SendMessage(e);
+        }
+        
     }
 
     return true;
@@ -68,19 +74,25 @@ void Platform::Release()
 
     void Platform::AddListener(InputListener* listener)
     {
-        _listeners.push_back(listener);
+        //checks if listener is not in the list
+        auto it = std::find(_listeners.begin(), _listeners.end(), listener);
+        if(it == _listeners.end())
+            _listeners.push_back(listener);
     }
 
     void Platform::RemoveListener(InputListener* listener)
     {
-        _listeners.remove(listener);
+        //checks if listener is in the list
+        auto it = std::find(_listeners.begin(), _listeners.end(), listener);
+        if(it != _listeners.end())
+            _listeners.remove(listener);
     }
 
     void Platform::SendMessage(const SDL_Event& e)
     {
-        for(InputListener* listener : _listeners)
+        for(auto listener : _listeners)
         {  
-            listener->OnEvent(e)
+            listener->OnEvent(e);
         }
     }
 

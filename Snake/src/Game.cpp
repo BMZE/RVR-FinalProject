@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Player.h"
-
+#include "Input.h"
 
 Game::Game()
 {
