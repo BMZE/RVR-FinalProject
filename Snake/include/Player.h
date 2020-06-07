@@ -10,16 +10,26 @@ public:
     Player(int x, int y, int w, int h, const char* path);
     ~Player();
 
+    void Update();
     void Render();
+
     SDL_Texture* _texture;
 
 private:
+
+    void Input();
+
+    void Move();
+
+    enum Direction {North, East, South, West , END};
+
     int _xPos;
     int _yPos;
     int _width;
     int _height;
     
     SDL_Rect* _srcRect;
+    Direction _direction;
 };
 
 #endif
