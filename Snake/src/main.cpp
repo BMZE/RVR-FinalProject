@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Game.h"
 #include <time.h>
+#include <SDL2/SDL.h>
 
 int main() 
 {
@@ -21,7 +22,7 @@ int main()
 	double lastFrameTime = 0;
 	double elapsedTime = 0;
 
-    float rate = 0.05f; //FPS
+    float rate = 30.0f; //FPS
 	double maxPeriod = 1.0 / rate;
 
     Game game; 
@@ -42,7 +43,8 @@ int main()
 
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
-        Renderer::Present(); //display the new frame buffer
+        Renderer::Present(); //display the new frame buffer  
+        SDL_Delay(200);      
     }
 
     //Release SDL

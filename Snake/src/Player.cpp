@@ -28,7 +28,7 @@ void Player::Update()
 
 void Player::Render()
 {
-    SDL_Rect destRect = {_xPos, _yPos, _width, _height};
+    SDL_Rect destRect = {_xPos*20, _yPos*20, _width, _height};
     SDL_RenderCopy(Renderer::GetRenderer(), _texture, _srcRect, &destRect);
 }
 
