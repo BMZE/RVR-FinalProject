@@ -22,7 +22,7 @@ InputListener::~InputListener()
 
 void InputListener::OnEvent(const SDL_Event& event)
 {
-    _events.push_back(event);
+        _events.push_back(event);
 }
 
 std::list<SDL_Event> InputListener::GetInput()

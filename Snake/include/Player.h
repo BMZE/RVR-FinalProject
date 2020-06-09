@@ -21,7 +21,9 @@ private:
 
     void Move();
 
-    enum Direction {North, East, South, West , END};
+    void DisplayDir();
+
+    enum Direction {North, East, South, West, END};
 
     int _xPos;
     int _yPos;

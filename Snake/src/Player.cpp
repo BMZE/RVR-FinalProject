@@ -21,9 +21,7 @@ void Player::Update()
 {
     Input();
 
-    Move();
-
-    
+    Move(); 
 }
 
 void Player::Render()
@@ -36,23 +34,25 @@ void Player::Input()
 {
     InputInfo info = Input::GetInputInfo();
     
-    if (info.right)
+    if (info.right && (_direction == North || _direction == South)) //right
     {
-        int aux = _direction;
-        aux++;
-        if(aux >= END)
-            aux = 0;
-        _direction = (Direction)aux;
-        std::cout << "Direction: " << _direction <<'\n';
+        _direction = East;
+        DisplayDir();
     }
-    else if(info.left)
+    else if(info.left && (_direction == North || _direction == South)) //left
     {
-        int aux = _direction;
-        aux--;
-        if(aux < 0)
-            aux = (int)END - 1;
-        _direction = (Direction)aux;
-        std::cout << "Direction: " << _direction <<'\n';
+        _direction = West;
+        DisplayDir();
+    }
+    else if(info.forward && (_direction == West || _direction == East)) //up
+    {
+        _direction = North;
+        DisplayDir();
+    }
+    else if(info.back && (_direction == West || _direction == East)) //down
+    {
+        _direction = South;
+        DisplayDir();
     }
 }
 
@@ -60,7 +60,7 @@ void Player::Input()
 void Player::Move()
 {
     switch (_direction)
-        {
+    {
         case North:
             _yPos--;
             break;
@@ -75,7 +75,7 @@ void Player::Move()
             break;
         default:
             break;
-        }
+    }
 }
 
 Player::~Player()
@@ -87,3 +87,27 @@ Player::~Player()
     _srcRect = nullptr;
 }
 
+void Player::DisplayDir()
+{
+    std::string dir = "";
+    switch (_direction)
+    {
+        case North:
+        dir = "NORTH";
+            break;
+        case South:
+        dir = "SOUTH";
+            break;
+        case West:
+        dir = "WEST"; 
+            break;
+        case East:
+        dir = "EAST"; 
+            break;
+        default:
+        dir = "END";
+            break;
+    }
+
+    std::cout << dir << '\n';
+}

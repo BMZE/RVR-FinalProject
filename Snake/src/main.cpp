@@ -22,7 +22,7 @@ int main()
 	double lastFrameTime = 0;
 	double elapsedTime = 0;
 
-    float rate = 30.0f; //FPS
+    float rate = 60.0f; //FPS
 	double maxPeriod = 1.0 / rate;
 
     Game game; 
@@ -33,14 +33,17 @@ int main()
         currentTime = clock();
 		elapsedTime = (currentTime - lastFrameTime) / 1000;
 
+        //Input
         Input::Tick(); //register input
-        
+
+        //Update
         if (elapsedTime > maxPeriod)
 		{
             game.Update(); //update objects
             lastFrameTime = currentTime;
         }
 
+        //Render
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
         Renderer::Present(); //display the new frame buffer  

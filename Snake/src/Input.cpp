@@ -55,30 +55,30 @@ void Input::IsKeyDown(const SDL_Event & event)
     {
     //button keys
     case SDLK_a:
-        _inputInfo.left = true;
-        std::cout << "left true\n";
+        _inputInfo.left = true;    
         break;
     case SDLK_d:
         _inputInfo.right = true;
-        printf("right true\n");
         break;
     case SDLK_w:
         _inputInfo.forward = true;
-        printf("forward true\n");
         break;
+    case SDLK_s:
+        _inputInfo.back = true;
+        break;
+
     //arrow keys
      case SDLK_LEFT:
         _inputInfo.left = true;
-        printf("left true\n");
         break;
     case SDLK_RIGHT:
-        _inputInfo.right = true;
-        printf("right true\n");
+         _inputInfo.right = true;
         break;
     case SDLK_UP:
         _inputInfo.forward = true;
-        printf("forward true\n");
         break;
+    case SDLK_DOWN:
+        _inputInfo.back = true;
     default:
         break;
     }
@@ -91,28 +91,29 @@ void Input::IsKeyUp(const SDL_Event & event)
     //button keys
      case SDLK_a:
         _inputInfo.left = false;
-        printf("left false\n");
         break;
     case SDLK_d /*|| SDLK_RIGHT*/:
         _inputInfo.right = false;
-        printf("right false\n");
         break;
     case SDLK_w:
         _inputInfo.forward = false;
-        printf("forward false\n");
         break;
+    case SDLK_s:
+        _inputInfo.back = false;
+        break;
+
     //arrow keys
     case SDLK_LEFT:
         _inputInfo.left = false;
-        printf("left false\n");
         break;
     case  SDLK_RIGHT:
         _inputInfo.right = false;
-        printf("right false\n");
         break;
     case SDLK_UP:
         _inputInfo.forward = false;
-        printf("forward false\n");
+        break;
+    case SDLK_DOWN:
+        _inputInfo.back = false;
         break;
     default:
         break;

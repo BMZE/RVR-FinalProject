@@ -3,9 +3,10 @@
 
 struct InputInfo
 {
-    bool right;
-    bool left;
-    bool forward;
+    bool right = false;
+    bool left = false;
+    bool forward = false;
+    bool back = false;
 };
 
 #endif
