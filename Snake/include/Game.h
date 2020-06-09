@@ -21,11 +21,14 @@ public:
 
     void Render();
 
+    std::vector<std::vector<Tile>> GetTilemap();
+    void SetTile(int x, int y, Tile tile);
+
 private: 
 
     const int TILE_PIXEL_SIZE = 20;
     
-    std::vector<std::vector<Tile*>> _tilemap; //game tiles (columns and rows)
+    std::vector<std::vector<Tile>> _tilemap; //game tiles (columns and rows)
     std::vector<GameObject*> _gameObjects;
 };
 #endif

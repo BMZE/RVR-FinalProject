@@ -3,11 +3,14 @@
 
 #include "GameObject.h" 
 
+class SDL_Texture;
+class SDL_Rect;
+
 class Fruit : public GameObject 
 {
 public:
 
-    Fruit(Type t);
+    Fruit(int x, int y, int size, const char* path);
     ~Fruit();
 
     void Update();
@@ -17,6 +20,13 @@ public:
     inline Type GetType(){ return _type; };
 
 private:
+
+    int _xPos;
+    int _yPos;
+    int _size;
+
+    SDL_Rect* _srcRect;
+    SDL_Texture* _texture; //image texture
 
 };
 #endif

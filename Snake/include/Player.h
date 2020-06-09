@@ -11,13 +11,13 @@ class Node;
 class Player : public GameObject
 {
 public:
-    Player(int x, int y, int w, int h, const char* path, Type t);
+    Player(int x, int y, int w, int h, const char* path, Game* g);
     ~Player();
 
     /**
      * Updates snake
      */
-    void Update(std::vector<std::vector<Tile*>> &tilemap);
+    void Update();
     
     /**
      * Renders snake
@@ -36,11 +36,15 @@ private:
     /**
      * Snake position update
      */
-    void Move(std::vector<std::vector<Tile*>> &tilemap);
+    void Move();
 
-    bool OnCollision(std::vector<std::vector<Tile*>> &tilemap);
+    bool OnCollision();
 
-    void AddNode(int x, int y, std::vector<std::vector<Tile*>> &tilemap);
+    bool OutOfBounds();
+
+    void SetNewPosition();
+
+    void AddNode(int x, int y);
 
     void DisplayDir(); //debug method for current snake direction
 
@@ -62,6 +66,10 @@ private:
     std::list<Node*> _snake;
 
     bool firstUpdate = false;
+    Game* _game;
+    bool _collision = false;
+    Tile _snakeTile;
+
 };
 
 

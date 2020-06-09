@@ -10,7 +10,7 @@ public:
     GameObject() {};
     ~GameObject(){};
 
-    virtual void Update(std::vector<std::vector<Tile*>> &tilemap) = 0;
+    virtual void Update() = 0;
     virtual void Render() = 0;
     virtual Type GetType() = 0;
 
