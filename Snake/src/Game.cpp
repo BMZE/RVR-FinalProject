@@ -29,7 +29,7 @@ Game::Game()
 void Game::Update()
 {
     for(size_t i = 0; i < _players.size(); i++)
-        _players[i]->Update();
+        _players[i]->Update(_tilemap);
 }
 
 void Game::Render()

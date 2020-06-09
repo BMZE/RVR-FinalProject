@@ -13,21 +13,66 @@ Player::Player(int x, int y, int w, int h, const char* path): _xPos(x), _yPos(y)
     _srcRect = new SDL_Rect {0, 0, width, height}; //source texture rect
 
     _direction = North;
+
+    _snake.push_back(new Node(x, y)); //head nodes
+
+    y++; AddNode(x, y);
+    y++; AddNode(x, y);
+    y++; AddNode(x, y);
+    y++; AddNode(x, y);
+    y++; AddNode(x, y);
+    y++; AddNode(x, y);            
+    y++; AddNode(x, y);
+
+}
+
+void Player::AddNode(int x, int y)
+{
+    Node* node = new Node(x, y);
+    
+    Node* it = _snake.front();
+    while(it->next != nullptr)
+        it = it->next;
+    
+    it->next = node;
+    node->father = it;
+    _snake.push_back(node);
+
+    std::cout << _snake.size() << '\n';
 }
 
 
 
-void Player::Update()
+void Player::Update(std::vector<std::vector<bool>> &tilemap)
 {
     Input();
 
     Move(); 
+
+    OnCollision(tilemap);
+}
+
+bool Player::OnCollision(std::vector<std::vector<bool>> &tilemap)
+{
+    //Out of bounds collision
+    if(_xPos < 0 || _xPos >= tilemap.size())
+        return true;
+    else if(_yPos < 0 || _yPos >= tilemap[0].size())
+        return true;
+    else if(tilemap[_xPos][_yPos]) //collision with snake
+        return true;
+
+    return false;
 }
 
 void Player::Render()
 {
-    SDL_Rect destRect = {_xPos*20, _yPos*20, _width, _height};
-    SDL_RenderCopy(Renderer::GetRenderer(), _texture, _srcRect, &destRect);
+
+    for(auto node : _snake)
+    {
+        SDL_Rect destRect = {node->x * 20, node->y * 20, _width, _height};
+        SDL_RenderCopy(Renderer::GetRenderer(), _texture, _srcRect, &destRect);
+    }
 }
 
 void Player::Input()
@@ -76,6 +121,18 @@ void Player::Move()
         default:
             break;
     }
+
+    Node* it = _snake.back();
+    
+    while(it->father != nullptr)
+    {
+        it->x = it->father->x;
+        it->y = it->father->y;
+        it = it->father;
+    }
+
+    _snake.front()->x = _xPos;
+    _snake.front()->y = _yPos;
 }
 
 Player::~Player()
