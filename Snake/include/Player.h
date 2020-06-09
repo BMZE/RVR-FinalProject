@@ -2,26 +2,29 @@
 #define _H_Player_H_
 #include <list>
 #include <vector>
+#include "GameObject.h"
 
 class SDL_Texture;
 class SDL_Rect;
 class Node;
 
-class Player 
+class Player : public GameObject
 {
 public:
-    Player(int x, int y, int w, int h, const char* path);
+    Player(int x, int y, int w, int h, const char* path, Type t);
     ~Player();
 
     /**
      * Updates snake
      */
-    void Update(std::vector<std::vector<bool>> &tilemap);
+    void Update(std::vector<std::vector<Tile*>> &tilemap);
     
     /**
      * Renders snake
      */
     void Render();
+
+    inline Type GetType(){ return _type; };
 
 private:
 
@@ -33,13 +36,15 @@ private:
     /**
      * Snake position update
      */
-    void Move();
+    void Move(std::vector<std::vector<Tile*>> &tilemap);
 
-    bool OnCollision(std::vector<std::vector<bool>> &tilemap);
+    bool OnCollision(std::vector<std::vector<Tile*>> &tilemap);
 
-    void AddNode(int x, int y);
+    void AddNode(int x, int y, std::vector<std::vector<Tile*>> &tilemap);
 
     void DisplayDir(); //debug method for current snake direction
+
+    bool FindDuplicate(); //true if there are two snake nodes in one tile
 
     enum Direction {North, East, South, West}; //snake direction
 
@@ -55,6 +60,8 @@ private:
     Direction _direction;
 
     std::list<Node*> _snake;
+
+    bool firstUpdate = false;
 };
 
 

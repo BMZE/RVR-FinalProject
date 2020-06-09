@@ -5,28 +5,21 @@
 #include "Input.h"
 #include "InputInfo.h"
 
-Player::Player(int x, int y, int w, int h, const char* path): _xPos(x), _yPos(y), _width(w), _height(h)
+Player::Player(int x, int y, int w, int h, const char* path, Type t) 
+    : _xPos(x), _yPos(y), _width(w), _height(h)
 {
     int width, height;    
-    _texture = Renderer::LoadImage(path, &width, &height);
-
+    _texture = Renderer::LoadImage(path, &width, &height); //load texture
     _srcRect = new SDL_Rect {0, 0, width, height}; //source texture rect
 
-    _direction = North;
+    _direction = North; //initial direction
 
-    _snake.push_back(new Node(x, y)); //head nodes
+    _snake.push_back(new Node(x, y)); //head node
 
-    y++; AddNode(x, y);
-    y++; AddNode(x, y);
-    y++; AddNode(x, y);
-    y++; AddNode(x, y);
-    y++; AddNode(x, y);
-    y++; AddNode(x, y);            
-    y++; AddNode(x, y);
-
+    _type = t;
 }
 
-void Player::AddNode(int x, int y)
+void Player::AddNode(int x, int y, std::vector<std::vector<Tile*>> &tilemap)
 {
     Node* node = new Node(x, y);
     
@@ -38,29 +31,62 @@ void Player::AddNode(int x, int y)
     node->father = it;
     _snake.push_back(node);
 
+    tilemap[x][y]->go = this;
+    tilemap[x][y]->empty = false;
+    
     std::cout << _snake.size() << '\n';
 }
 
-
-
-void Player::Update(std::vector<std::vector<bool>> &tilemap)
+void Player::Update(std::vector<std::vector<Tile*>> &tilemap)
 {
+    if(!firstUpdate)
+    {
+        int x = _xPos; int y = _yPos;
+        firstUpdate = true;
+        y++; AddNode(x, y, tilemap);
+        y++; AddNode(x, y, tilemap);
+        y++; AddNode(x, y, tilemap);
+        y++; AddNode(x, y, tilemap);
+        //y++; AddNode(x, y, tilemap);
+        // y++; AddNode(x, y, tilemap);            
+        // y++; AddNode(x, y, tilemap);
+    }
+
     Input();
 
-    Move(); 
+    Move(tilemap); 
 
     OnCollision(tilemap);
 }
 
-bool Player::OnCollision(std::vector<std::vector<bool>> &tilemap)
+bool Player::OnCollision(std::vector<std::vector<Tile*>> &tilemap)
 {
     //Out of bounds collision
     if(_xPos < 0 || _xPos >= tilemap.size())
         return true;
     else if(_yPos < 0 || _yPos >= tilemap[0].size())
         return true;
-    else if(tilemap[_xPos][_yPos]) //collision with snake
+    else if(!tilemap[_xPos][_yPos]->empty && FindDuplicate())
+    {
+        std::cout << "COLLISION WITH SNAKE\n";
         return true;
+    }
+    // else if(!tilemap[_xPos][_yPos]->empty 
+    //     && tilemap[_xPos][_yPos]->go->GetType() == GameObject::Fruit) //collision with fruit
+    //     
+
+    return false;
+}
+
+bool Player::FindDuplicate()
+{
+    Node* it = _snake.front();
+    while(it->next != nullptr)
+    {    
+        it = it->next;
+        if(_xPos == it->x && _yPos == it->y)
+            return true;
+    }
 
     return false;
 }
@@ -102,7 +128,7 @@ void Player::Input()
 }
 
 
-void Player::Move()
+void Player::Move(std::vector<std::vector<Tile*>> &tilemap)
 {
     switch (_direction)
     {
@@ -122,17 +148,24 @@ void Player::Move()
             break;
     }
 
-    Node* it = _snake.back();
-    
-    while(it->father != nullptr)
-    {
-        it->x = it->father->x;
-        it->y = it->father->y;
-        it = it->father;
-    }
+    Node* it = _snake.back(); //old tail node is free in tilemap
+    tilemap[it->x][it->y]->empty = true;
+    tilemap[it->x][it->y]->go = nullptr;
 
+    if(_snake.size() > 1) //snake has more than one node
+    {   
+        while(it->father != nullptr)
+        {
+            it->x = it->father->x;
+            it->y = it->father->y;
+            it = it->father;
+        }
+    }
     _snake.front()->x = _xPos;
     _snake.front()->y = _yPos;
+
+    tilemap[_xPos][_yPos]->empty = false;
+    tilemap[_xPos][_yPos]->go = this;
 }
 
 Player::~Player()
@@ -142,6 +175,8 @@ Player::~Player()
 
     delete _srcRect;
     _srcRect = nullptr;
+
+    //TODO: FREE NODE LIST 
 }
 
 void Player::DisplayDir()
@@ -162,7 +197,6 @@ void Player::DisplayDir()
         dir = "EAST"; 
             break;
         default:
-        dir = "END";
             break;
     }
 

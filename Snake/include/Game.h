@@ -3,6 +3,13 @@
 #include <vector>
 
 class Player;
+class GameObject;
+
+struct Tile
+{
+    bool empty = true;
+    GameObject* go = nullptr;
+};
 
 class Game 
 {
@@ -13,14 +20,12 @@ public:
     void Update();
 
     void Render();
-    
 
 private: 
 
-    std::vector<Player*> _players;
     const int TILE_PIXEL_SIZE = 20;
     
-    std::vector<std::vector<bool>> _tilemap; //game tiles (columns and rows)
-    
+    std::vector<std::vector<Tile*>> _tilemap; //game tiles (columns and rows)
+    std::vector<GameObject*> _gameObjects;
 };
 #endif
