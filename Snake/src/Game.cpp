@@ -49,6 +49,21 @@ void Game::Render()
         _gameObjects[i]->Render();
 }
 
+void Game::FruitEaten(int x, int y)
+{
+    GameObject* fruit = _tilemap[x][y].go; //save fruit GameObject
+    _tilemap[x][y] = Tile(); //reset tile
+
+    for(size_t i = 0; i < _gameObjects.size(); i++)
+    {
+        if(_gameObjects[i] == fruit)
+        {
+            _gameObjects.erase(_gameObjects.begin() + i);
+            delete fruit; fruit = nullptr;
+        }
+    }
+}
+
 std::vector<std::vector<Tile>> Game::GetTilemap()
 {
     return _tilemap;

@@ -8,7 +8,7 @@ public:
     enum Type {Snake,  Fruit};
 
     GameObject() {};
-    ~GameObject(){};
+    virtual ~GameObject(){};
 
     virtual void Update() = 0;
     virtual void Render() = 0;

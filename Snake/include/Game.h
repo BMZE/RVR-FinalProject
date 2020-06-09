@@ -21,6 +21,8 @@ public:
 
     void Render();
 
+    void FruitEaten(int x, int y);
+
     std::vector<std::vector<Tile>> GetTilemap();
     void SetTile(int x, int y, Tile tile);
 

@@ -96,10 +96,11 @@ bool Player::OnCollision()
     else if(!_game->GetTilemap()[_xPos][_yPos].empty 
          && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
     {
+        _game->FruitEaten(_xPos, _yPos);
+
         int y = _snake.back()->y;
         y++; AddNode(_xPos, y);
-        y++; AddNode(_xPos, y);
-        y++; AddNode(_xPos, y);
+        
         std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
         return false;
     }   
