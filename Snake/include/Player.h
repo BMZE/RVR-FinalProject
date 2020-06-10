@@ -11,7 +11,7 @@ class Node;
 class Player : public GameObject
 {
 public:
-    Player(int x, int y, int w, int h, const char* path, Game* g);
+    Player(int x, int y, int size, const char* path, Game* g);
     ~Player();
 
     /**
@@ -25,6 +25,8 @@ public:
     void Render();
 
     inline Type GetType(){ return _type; };
+
+    enum Direction {North, East, South, West}; //snake direction
 
 private:
 
@@ -44,21 +46,20 @@ private:
 
     void SetNewPosition();
 
-    void AddNode(int x, int y);
+    void AddNode();
 
     void DisplayDir(); //debug method for current snake direction
 
     bool FindDuplicate(); //true if there are two snake nodes in one tile
 
-    enum Direction {North, East, South, West}; //snake direction
+    void DirectionChange();
 
     SDL_Texture* _texture; //image texture
 
     int _xPos; //head node position
     int _yPos;
 
-    int _width; //node width & height in pixels
-    int _height;
+    int _size; //node width & height in pixels
     
     SDL_Rect* _srcRect;
     Direction _direction;
@@ -85,15 +86,21 @@ public:
     Node* father = nullptr;
     Node* next = nullptr; 
 
+    Player::Direction currentDirection = Player::Direction::North;
+    Player::Direction lastDirecion = Player::Direction::North;
+
     //update pos from before method
     void UpdatePosition()
     {
-        if(father != nullptr)
-        {
-            father->x = x;
-            father->y = y;
-        }
+        x = father->x, 
+        y = father->y;
     };
+
+    void UpdateDirections()
+    {
+        lastDirecion = currentDirection;
+        currentDirection = father->lastDirecion;   
+    }
 
 };
 

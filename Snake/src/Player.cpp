@@ -5,8 +5,8 @@
 #include "Input.h"
 #include "InputInfo.h"
 
-Player::Player(int x, int y, int w, int h, const char* path, Game* g) 
-    : _xPos(x), _yPos(y), _width(w), _height(h)
+Player::Player(int x, int y, int size, const char* path, Game* g) 
+    : _xPos(x), _yPos(y), _size(size)
 {
     int width, height;    
     _texture = Renderer::LoadImage(path, &width, &height); //load texture
@@ -25,16 +25,34 @@ Player::Player(int x, int y, int w, int h, const char* path, Game* g)
     _snakeTile.go = this;
 }
 
-void Player::AddNode(int x, int y)
+void Player::AddNode()
 {
+    int x = 0; int y = 0;
+    
+    
+    if(_snake.back()->lastDirecion == North)
+    {
+        x = _snake.back()->x; y = _snake.back()->y + 1;
+    }
+    else if(_snake.back()->lastDirecion == South)
+    {
+        x = _snake.back()->x; y = _snake.back()->y - 1;
+    }
+    else if(_snake.back()->lastDirecion == West)
+    {
+        x = _snake.back()->x - 1; y = _snake.back()->y;
+    }
+    else if(_snake.back()->lastDirecion == East)
+    {
+        x = _snake.back()->x + 1; y = _snake.back()->y;
+    }
+
     Node* node = new Node(x, y);
-    
-    Node* it = _snake.front();
-    while(it->next != nullptr)
-         it = it->next;
-    
-    it->next = node;
-    node->father = it;
+
+    //set father & next nodes 
+    _snake.back()->next = node; //TODO: SNAKE.BACK()
+    node->father = _snake.back();
+    node->UpdateDirections();
     _snake.push_back(node);
 
     _game->SetTile(x, y, _snakeTile); //set node info on tilemap
@@ -44,17 +62,14 @@ void Player::AddNode(int x, int y)
 
 void Player::Update()
 {
-    if(!firstUpdate) //FOR DEBUGGING LONGER SNAKE
-    {
-        int x = _xPos; int y = _yPos;
-        firstUpdate = true;
-        y++; AddNode(x, y);
-        y++; AddNode(x, y);
-        y++; AddNode(x, y);
-        y++; AddNode(x, y);
-    }
-
-    //std::cout << "TYPE: " << tilemap[_xPos][_yPos].go->GetType() << '\n';
+//     if(!firstUpdate) //FOR DEBUGGING LONGER SNAKE
+//     {
+//         firstUpdate = true;
+//         AddNode();
+//         AddNode();
+//         AddNode();
+//         AddNode();
+//     }
 
     Input(); //handle input
 
@@ -98,9 +113,8 @@ bool Player::OnCollision()
     {
         _game->FruitEaten(_xPos, _yPos);
 
-        int y = _snake.back()->y;
-        y++; AddNode(_xPos, y);
-        
+        AddNode();
+
         std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
         return false;
     }   
@@ -126,7 +140,7 @@ void Player::Render()
 
     for(auto node : _snake)
     {
-        SDL_Rect destRect = {node->x * 20, node->y * 20, _width, _height};
+        SDL_Rect destRect = {node->x * _size, node->y * _size, _size, _size};
         SDL_RenderCopy(Renderer::GetRenderer(), _texture, _srcRect, &destRect);
     }
 }
@@ -138,24 +152,46 @@ void Player::Input()
     if (info.right && (_direction == North || _direction == South)) //right
     {
         _direction = East;
+        DirectionChange();
         DisplayDir();
     }
     else if(info.left && (_direction == North || _direction == South)) //left
     {
         _direction = West;
+
+        DirectionChange();
         DisplayDir();
     }
     else if(info.forward && (_direction == West || _direction == East)) //up
     {
         _direction = North;
+        DirectionChange();
         DisplayDir();
     }
     else if(info.back && (_direction == West || _direction == East)) //down
     {
         _direction = South;
+        DirectionChange();
         DisplayDir();
     }
 }
+
+void Player::DirectionChange()
+{
+    _snake.front()->lastDirecion = _snake.front()->currentDirection;
+    _snake.front()->currentDirection = _direction;
+
+    if(_snake.size() > 1)
+    {
+        Node* it = _snake.front()->next;
+        while(it->next != nullptr)
+        {
+            it->UpdateDirections();
+            it = it->next;
+        }
+    }
+}
+
 
 void Player::SetNewPosition()
 {
@@ -167,8 +203,9 @@ void Player::SetNewPosition()
     {   
         while(it->father != nullptr) //Update nodes
         {
-            it->x = it->father->x;
-            it->y = it->father->y;
+            // it->x = it->father->x;
+            // it->y = it->father->y;
+            it->UpdatePosition();
             it = it->father;
         }
     }

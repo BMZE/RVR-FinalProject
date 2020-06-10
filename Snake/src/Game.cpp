@@ -27,28 +27,31 @@ Game::Game()
     y /= TILE_PIXEL_SIZE;
 
     _gameObjects.reserve(2);
-    _gameObjects.push_back(new Player(x, y, 20, 20, "bin/Assets/Red.bmp", this));
+    _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", this));
     
     _tilemap[x][y].empty = false; //player head node
     _tilemap[x][y].go = _gameObjects[0];
 
-    _gameObjects.push_back(new Fruit(20, 20, 20, "bin/Assets/apple.bmp"));
-    _tilemap[20][20].empty = false;
-    _tilemap[20][20].go = _gameObjects[1];
+    _gameObjects.push_back(new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp"));
+    _tilemap[20][5].empty = false;
+    _tilemap[20][5].go = _gameObjects[1];
 }
 
+//Updates active GameObjects
 void Game::Update()
 {
     for(size_t i = 0; i < _gameObjects.size(); i++)
         _gameObjects[i]->Update();
 }
 
+//Renders active GameObjects
 void Game::Render()
 {   
     for(size_t i = 0; i < _gameObjects.size(); i++)
         _gameObjects[i]->Render();
 }
 
+//deletes & destroys fruit from vector & tilemap 
 void Game::FruitEaten(int x, int y)
 {
     GameObject* fruit = _tilemap[x][y].go; //save fruit GameObject
