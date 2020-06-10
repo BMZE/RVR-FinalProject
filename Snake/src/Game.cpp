@@ -52,8 +52,7 @@ void Game::FruitEaten(int x, int y)
     {
         if(_gameObjects[i] == fruit)
         {
-            _gameObjects.erase(_gameObjects.begin() + i);
-            delete fruit; fruit = nullptr;
+            static_cast<Fruit*>(_gameObjects[i])->Rellocate(this);
         }
     }
 }

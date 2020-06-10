@@ -6,6 +6,7 @@
 //FORWARD DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
+class Game;
 
 class Fruit : public GameObject 
 {
@@ -28,6 +29,11 @@ public:
      * @return Type of GameObject (snake/fruit/...)
      */
     inline Type GetType(){ return _type; };
+
+    /**
+     * When fruit is eaten, fruit changes position
+     */
+    void Rellocate(Game* g);
 
 private:
 
