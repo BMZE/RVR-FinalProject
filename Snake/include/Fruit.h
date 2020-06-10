@@ -3,6 +3,7 @@
 
 #include "GameObject.h" 
 
+//FORWARD DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
 
@@ -13,19 +14,28 @@ public:
     Fruit(int x, int y, int size, const char* path);
     ~Fruit();
 
+    /**
+     * Updates GameObject
+     */
     void Update();
 
+    /**
+     * Renders GameObject
+     */
     void Render();
 
+    /**
+     * @return Type of GameObject (snake/fruit/...)
+     */
     inline Type GetType(){ return _type; };
 
 private:
 
-    int _xPos;
+    int _xPos; //position in tilemap
     int _yPos;
-    int _size;
+    int _size; //size in pixels
 
-    SDL_Rect* _srcRect;
+    SDL_Rect* _srcRect; //texture source rect
     SDL_Texture* _texture; //image texture
 
 };

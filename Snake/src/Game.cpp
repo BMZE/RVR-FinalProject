@@ -7,20 +7,9 @@
 
 Game::Game()
 {
-    //Create TileMap
+    InitTilemap();//Create TileMap
 
-    //number of tiles
-    int width = Renderer::GetScreenWidth() / TILE_PIXEL_SIZE;
-    int height = Renderer::GetScreenHeight() / TILE_PIXEL_SIZE;
-
-    //initial tilemap info
-    _tilemap.resize(width);
-    for(int i = 0; i < width; i++)
-    {
-        Tile tile;
-        _tilemap[i].resize(height, tile);
-    } 
-
+    //TODO: final 
     //create players
     int x = 400; int y = 500;
     x /= TILE_PIXEL_SIZE;
@@ -51,7 +40,9 @@ void Game::Render()
         _gameObjects[i]->Render();
 }
 
-//deletes & destroys fruit from vector & tilemap 
+
+
+//Relocates fruit once eaten
 void Game::FruitEaten(int x, int y)
 {
     GameObject* fruit = _tilemap[x][y].go; //save fruit GameObject
@@ -67,15 +58,37 @@ void Game::FruitEaten(int x, int y)
     }
 }
 
+#pragma region TILE MAP
+
+//Initializes the tile map
+void Game::InitTilemap()
+{
+    //number of tiles depending on window size
+    int width = Renderer::GetScreenWidth() / TILE_PIXEL_SIZE;
+    int height = Renderer::GetScreenHeight() / TILE_PIXEL_SIZE;
+
+    //initial tilemap info
+    _tilemap.resize(width);
+    for(int i = 0; i < width; i++)
+    {
+        Tile tile;
+        _tilemap[i].resize(height, tile);
+    } 
+}
+
+//Returns the tile map info
 std::vector<std::vector<Tile>> Game::GetTilemap()
 {
     return _tilemap;
 }
 
+//Modifies info in tile map
 void Game::SetTile(int x, int y, Tile tile)
 {
     _tilemap[x][y] = tile;
 }
+
+#pragma endregion
 
 Game::~Game()
 {

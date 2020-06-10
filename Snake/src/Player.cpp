@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Input.h"
 #include "InputInfo.h"
+#include "Game.h"
 
 Player::Player(int x, int y, int size, const char* path, Game* g) 
     : _xPos(x), _yPos(y), _size(size)
@@ -16,128 +17,28 @@ Player::Player(int x, int y, int size, const char* path, Game* g)
 
     _snake.push_back(new Node(x, y)); //head node
 
-    _type = GameObject::Snake;
+    _type = GameObject::Snake; 
     
     _game = g; //game reference
 
-    //Snake tile
-    _snakeTile.empty = false;
-    _snakeTile.go = this;
 }
 
-void Player::AddNode()
-{
-    int x = 0; int y = 0;
-    
-    
-    if(_snake.back()->lastDirecion == North)
-    {
-        x = _snake.back()->x; y = _snake.back()->y + 1;
-    }
-    else if(_snake.back()->lastDirecion == South)
-    {
-        x = _snake.back()->x; y = _snake.back()->y - 1;
-    }
-    else if(_snake.back()->lastDirecion == West)
-    {
-        x = _snake.back()->x - 1; y = _snake.back()->y;
-    }
-    else if(_snake.back()->lastDirecion == East)
-    {
-        x = _snake.back()->x + 1; y = _snake.back()->y;
-    }
-
-    Node* node = new Node(x, y);
-
-    //set father & next nodes 
-    _snake.back()->next = node; //TODO: SNAKE.BACK()
-    node->father = _snake.back();
-    node->UpdateDirections();
-    _snake.push_back(node);
-
-    _game->SetTile(x, y, _snakeTile); //set node info on tilemap
-    
-    std::cout << _snake.size() << '\n';
-}
-
+//Updates snake
 void Player::Update()
 {
-//     if(!firstUpdate) //FOR DEBUGGING LONGER SNAKE
-//     {
-//         firstUpdate = true;
-//         AddNode();
-//         AddNode();
-//         AddNode();
-//         AddNode();
-//     }
-
     Input(); //handle input
 
-    if(!_collision)
+    if(!_collision) //collision impends snake movement
+    {
         Move(); //next snake pos
-
-    //check if next is out of bounds && check new pos' collisions
-    if(!OutOfBounds() && !OnCollision()) 
-    {   
-        SetNewPosition(); //update snake to new pos
-    }
-    else 
-    {
-        _collision = true;
-    }
-}
-
-//Returns true if snake gets out of bounds (the window)
-bool Player::OutOfBounds()
-{
-    if(_xPos < 0 || _xPos >= _game->GetTilemap().size()
-        || _yPos < 0 || _yPos >= _game->GetTilemap()[0].size())
-    {
-        printf("OUT OF BOUNDS\n");
-        return true;
-    }  
-
-    return false; 
-}
-
-bool Player::OnCollision()
-{   
-    if(!_game->GetTilemap()[_xPos][_yPos].empty
-        && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Snake) 
-    {
-        std::cout << "COLLISION WITH SNAKE\n"; //stops snake
-        return true;
-    }
-    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
-         && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
-    {
-        _game->FruitEaten(_xPos, _yPos);
-
-        AddNode();
-
-        std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
-        return false;
+        if(!OnCollision()) //if next tile is available for movement
+            SetNewPosition(); //set snake to next tile
     }   
-
-    return false;
 }
 
-bool Player::FindDuplicate()
-{
-    Node* it = _snake.front();
-    while(it->next != nullptr)
-    {    
-        it = it->next;
-        if(_xPos == it->x && _yPos == it->y)
-            return true;
-    }
-
-    return false;
-}
-
+//Renders snake nodes
 void Player::Render()
 {
-
     for(auto node : _snake)
     {
         SDL_Rect destRect = {node->x * _size, node->y * _size, _size, _size};
@@ -145,6 +46,7 @@ void Player::Render()
     }
 }
 
+//Handles input -> snake direction change
 void Player::Input()
 {
     InputInfo info = Input::GetInputInfo();
@@ -176,12 +78,46 @@ void Player::Input()
     }
 }
 
+//Checks snake's possible collisions
+bool Player::OnCollision()
+{   
+    if(_xPos < 0 || _xPos >= _game->GetTilemap().size()
+        || _yPos < 0 || _yPos >= _game->GetTilemap()[0].size()) //Out of bounds collision
+    {
+        printf("OUT OF BOUNDS\n");
+        _collision = true; //snake collided
+        return true;
+    }  
+    else if(!_game->GetTilemap()[_xPos][_yPos].empty
+        && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Snake) //collision with snake
+    {
+        std::cout << "COLLISION WITH SNAKE\n"; //stops snake
+        _collision = true; //snake collided
+        return true;
+    }
+    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
+         && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
+    {
+        _game->FruitEaten(_xPos, _yPos);
+
+        AddNode();
+
+        std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
+        return false;
+    }   
+
+    return false;
+}
+
+#pragma region SNAKE NODE MANAGEMENT
+
+//Called when snake changes direction, updates nodes current direction
 void Player::DirectionChange()
 {
-    _snake.front()->lastDirecion = _snake.front()->currentDirection;
+    _snake.front()->lastDirecion = _snake.front()->currentDirection; //front new direction
     _snake.front()->currentDirection = _direction;
 
-    if(_snake.size() > 1)
+    if(_snake.size() > 1) //update rest of nodes direction 
     {
         Node* it = _snake.front()->next;
         while(it->next != nullptr)
@@ -192,31 +128,47 @@ void Player::DirectionChange()
     }
 }
 
-
-void Player::SetNewPosition()
+//Adds node after tail with correct direction to follow
+void Player::AddNode()
 {
-     Node* it = _snake.back(); 
-     
-     _game->SetTile(it->x, it->y, Tile()); //reset old tail info on tilemap 
-
-    if(_snake.size() > 1) //snake has more than one node
-    {   
-        while(it->father != nullptr) //Update nodes
-        {
-            // it->x = it->father->x;
-            // it->y = it->father->y;
-            it->UpdatePosition();
-            it = it->father;
-        }
+    int x = 0; int y = 0;
+    
+    //New node position (after tail)
+    if(_snake.back()->lastDirecion == North)
+    {
+        x = _snake.back()->x; y = _snake.back()->y + 1;
+    }
+    else if(_snake.back()->lastDirecion == South)
+    {
+        x = _snake.back()->x; y = _snake.back()->y - 1;
+    }
+    else if(_snake.back()->lastDirecion == West)
+    {
+        x = _snake.back()->x - 1; y = _snake.back()->y;
+    }
+    else if(_snake.back()->lastDirecion == East)
+    {
+        x = _snake.back()->x + 1; y = _snake.back()->y;
     }
 
-    //head new position
-    _snake.front()->x = _xPos; 
-    _snake.front()->y = _yPos;
+    Node* node = new Node(x, y);
 
-    _game->SetTile(_xPos,_yPos, _snakeTile); //head new tile
+    //set father & next nodes 
+    _snake.back()->next = node; //TODO: SNAKE.BACK()
+    node->father = _snake.back();
+    node->UpdateDirections();
+    _snake.push_back(node);
+
+    //Snake tile
+    Tile tile;
+    tile.empty = false; tile.go = this;
+    
+    _game->SetTile(x, y, tile); //set node info on tilemap
+    
+    std::cout << _snake.size() << '\n';
 }
 
+//Set head in new tile position 
 void Player::Move()
 {
     switch (_direction)
@@ -238,6 +190,37 @@ void Player::Move()
     }   
 }
 
+//Sets all snake nodes in new tile position
+void Player::SetNewPosition()
+{
+     Node* it = _snake.back(); 
+     
+     _game->SetTile(it->x, it->y, Tile()); //reset old tail info on tilemap 
+
+    if(_snake.size() > 1) //snake has more than one node
+    {   
+        while(it->father != nullptr) //Update nodes
+        {
+            // it->x = it->father->x;
+            // it->y = it->father->y;
+            it->UpdatePosition();
+            it = it->father;
+        }
+    }
+
+    //head new position
+    _snake.front()->x = _xPos; 
+    _snake.front()->y = _yPos;
+
+    //Snake tile
+    Tile tile;
+    tile.empty = false; tile.go = this;
+
+    _game->SetTile(_xPos,_yPos, tile); //head new tile
+}
+
+#pragma endregion
+
 Player::~Player()
 {
     SDL_DestroyTexture(_texture);
@@ -248,7 +231,6 @@ Player::~Player()
 
     //TODO: FREE NODE LIST 
 }
-
 
 //Displays direction for debugging
 void Player::DisplayDir()

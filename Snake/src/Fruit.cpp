@@ -2,8 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "Renderer.h"
 
-Fruit::Fruit(int x, int y, int size, const char* path) 
-    : _xPos(x), _yPos(y), _size(size)
+Fruit::Fruit(int x, int y, int size, const char* path) : _xPos(x), _yPos(y), _size(size)
 {
     _type = GameObject::Fruit;   
 
@@ -13,11 +12,9 @@ Fruit::Fruit(int x, int y, int size, const char* path)
 
 }
 
-void Fruit::Update()
-{
+void Fruit::Update(){}
 
-}
-
+//Renders fruit as tile in tilemap
 void Fruit::Render()
 {
     SDL_Rect destRect = {_xPos * _size, _yPos * _size, _size, _size};

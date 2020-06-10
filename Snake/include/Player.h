@@ -4,9 +4,11 @@
 #include <vector>
 #include "GameObject.h"
 
+//FORWARDS DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
 class Node;
+class Game;
 
 class Player : public GameObject
 {
@@ -24,53 +26,43 @@ public:
      */
     void Render();
 
+    /**
+     * @return Type of GameObject (snake)
+     */
     inline Type GetType(){ return _type; };
 
     enum Direction {North, East, South, West}; //snake direction
 
 private:
 
-    /**
-     * Handles input -> snake direction change
-     */
-    void Input();
+    void Input(); //Handles input -> snake direction change
 
-    /**
-     * Snake position update
-     */
-    void Move();
+    void Move(); //Set head in new tile position
 
-    bool OnCollision();
+    void DirectionChange(); //called when snake changes direction, updates nodes current direction
 
-    bool OutOfBounds();
+    void SetNewPosition(); //Sets all snake nodes in new tile position
+    
+    bool OnCollision(); //Checks snake's possible collisions
 
-    void SetNewPosition();
-
-    void AddNode();
+    void AddNode(); //adds new node to the snake list with correct direction to follow
 
     void DisplayDir(); //debug method for current snake direction
-
-    bool FindDuplicate(); //true if there are two snake nodes in one tile
-
-    void DirectionChange();
-
-    SDL_Texture* _texture; //image texture
-
-    int _xPos; //head node position
+    
+    int _xPos; //head node x & y position
     int _yPos;
-
     int _size; //node width & height in pixels
     
-    SDL_Rect* _srcRect;
-    Direction _direction;
+    SDL_Rect* _srcRect; //texture source rect
+    SDL_Texture* _texture; //image texture
+
+    Direction _direction; //head direction
 
     std::list<Node*> _snake;
 
-    bool firstUpdate = false;
-    Game* _game;
-    bool _collision = false;
-    Tile _snakeTile;
+    Game* _game; //reference to game instance
 
+    bool _collision = false;
 };
 
 
@@ -80,7 +72,7 @@ public:
     Node(int xP, int yP) :x(xP), y(yP){};
     ~Node(){};
 
-    int x;
+    int x; //position
     int y;
 
     Node* father = nullptr;
@@ -96,6 +88,7 @@ public:
         y = father->y;
     };
 
+    //update current direction from father node
     void UpdateDirections()
     {
         lastDirecion = currentDirection;
