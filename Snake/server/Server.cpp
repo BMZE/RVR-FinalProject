@@ -25,16 +25,31 @@ void Server::ProcessMessages()
         _socket->recv(msg, client);
 
 
-        switch(msg.Type())
+        switch(msg._type)
         {
             case Message::LOGIN:
                 count++;
                 _clients.push_back(client);
                 std::cout << "Player " << count << " joined the game\n";
-                break;
+            break;
+
+            case Message::INPUT:
+                for(Socket* sock: _clients)
+                {
+                     if(!(*sock == *client))
+                        _socket->send(msg, *sock);
+                }
+            break;
+
+            case Message::FRUIT_EATEN:
+                for(Socket* sock: _clients)
+                {
+                     if(!(*sock == *client))
+                        _socket->send(msg, *sock);
+                }
+            break;
 
             case Message::LOGOUT:
-                
                 int player = 0;
                 for(Socket* sock: _clients)
                 {
@@ -47,15 +62,7 @@ void Server::ProcessMessages()
                     }
                     player++;
                 }
-                break;
-
-            case Message::INPUT:
-                for(Socket* sock: _clients)
-                {
-                     if(!(*sock == *client))
-                        _socket->send(msg, *sock);
-                }
-                break;
+            break;
         }
     }
 }

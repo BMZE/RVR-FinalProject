@@ -47,7 +47,7 @@ int main()
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
         Renderer::Present(); //display the new frame buffer  
-        SDL_Delay(125);      
+        SDL_Delay(130);      
     }
 
     //Release SDL
