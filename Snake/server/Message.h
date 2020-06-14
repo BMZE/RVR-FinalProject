@@ -12,6 +12,7 @@ class Message : public Serializable
 public:
     Message(){};
     Message(const InputInfo &info);
+    Message(const FruitInfo &info);
     ~Message();
 
     void to_bin();

@@ -8,7 +8,7 @@
 
 #include <ostream>
 #include <string.h>
-#include "Serializable.h"
+#include "Message.h"
 
 
 Socket::Socket(const char * address, const char * port):sd(-1)
@@ -60,7 +60,7 @@ int Socket::Bind()
     return ::bind(sd, (const struct sockaddr *) &sa, sa_len);
 }
 
-int Socket::recv(Serializable &obj, Socket * &sock)
+int Socket::recv(Message &obj, Socket * &sock)
 {
     struct sockaddr sa;
     socklen_t sa_len = sizeof(struct sockaddr);
@@ -85,7 +85,7 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 }
 
 
-int Socket::send(Serializable& obj, const Socket& sock)
+int Socket::send(Message& obj, const Socket& sock)
 {
     //Serializar el objeto
     //Enviar el objeto binario a sock usando el socket sd

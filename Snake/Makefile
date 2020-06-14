@@ -6,12 +6,14 @@ SRC		:= src
 INCLUDE	:= include
 LIB		:= lib
 SERVER 	:= server
+CLIENT 	:= client
 
 LIBRARIES	:= -lSDL2 -lSDL2main 
 EXECUTABLE	:= snake
 SERVER_EXE	:= server
+CLIENT_EXE 	:= client
 
-all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE)
+all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE) $(BIN)/$(CLIENT_EXE)
 
 run: clean all
 	clear
@@ -21,8 +23,11 @@ run: clean all
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
 
-$(BIN)/$(SERVER_EXE): $(SERVER)/*.cpp
+$(BIN)/$(SERVER_EXE): ServerMain.cpp $(SERVER)/*.cpp 
 	$(CXX) $(CXX_FLAGS) -I$(SERVER) -L$(LIB) $^ -o $@ $(LIBRARIES)
+
+$(BIN)/$(CLIENT_EXE): $(CLIENT)/*.cpp $(SERVER)/*.cpp
+	$(CXX) $(CXX_FLAGS) -L$(LIB) $^ -o $@ $(LIBRARIES)
 
 clean:
 	-rm $(BIN)/*

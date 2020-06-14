@@ -6,7 +6,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 
-int main() 
+int main(int argc, char **argv) 
 {
     std::cout << "Initializing...\n";
 

@@ -16,14 +16,17 @@ Server::Server(const char * s, const char * p)
 
 void Server::ProcessMessages()
 {
+    std::cout << "Snake server is running\n" << "Waiting for players to join\n";
+
     int count = 0;
 
     while(true)
     {
+        std::cout << "Running\n";
+
         Socket* client;
         Message msg;
         _socket->recv(msg, client);
-
 
         switch(msg._type)
         {

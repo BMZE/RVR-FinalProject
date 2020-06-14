@@ -1,12 +1,20 @@
 #include "Message.h"
 #include <string.h>
+#include <iostream>
 
 Message::Message(const InputInfo &info) : _inputInfo(info)
 {
 }
 
+Message::Message(const FruitInfo &info) : _fruitInfo(info)
+{
+}
+
+
 void Message::to_bin()
 {
+    std::cout << "serialize: " << _type << '\n';
+
     if(_type == INPUT) //package input info
     {
         _data = new char[INPUT_SIZE];
@@ -35,6 +43,8 @@ int Message::from_bin(char * data)
     memcpy(&_type, data, sizeof(uint8_t)); //read type of message from data
     data += sizeof(uint8_t); 
 
+    std::cout << "Deserialize: " << _type << '\n';
+    
     if(_type == INPUT) //save inputinfo
     {
         memcpy(&_inputInfo, data, sizeof(InputInfo));

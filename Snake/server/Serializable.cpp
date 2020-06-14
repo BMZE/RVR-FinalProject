@@ -1,10 +1,10 @@
 #include "Serializable.h"
 
 
-Serializable::Serializable():_size(0), _data(0)
-{
+// Serializable::Serializable()
+// {
     
-}
+// }
 
 void Serializable::alloc_data(int32_t data_size)
 {

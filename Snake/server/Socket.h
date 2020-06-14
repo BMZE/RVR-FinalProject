@@ -4,7 +4,7 @@
 
 //FORWARD DECLARATIONS
 class Socket;
-class Serializable;
+class Message;
 
 
 /**
@@ -24,9 +24,9 @@ public:
 
     friend bool operator== (const Socket &s1, const Socket &s2);
 
-    int recv(Serializable &obj, Socket * &sock);
+    int recv(Message &obj, Socket * &sock);
 
-    int send(Serializable& obj, const Socket& sock);
+    int send(Message& obj, const Socket& sock);
 
     int Bind();
 
