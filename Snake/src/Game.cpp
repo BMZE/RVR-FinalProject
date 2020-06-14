@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Fruit.h"
 #include <iostream>
+#include <Platform.h>
 
 Game::Game()
 {
@@ -29,8 +30,11 @@ Game::Game()
 //Updates active GameObjects
 void Game::Update()
 {
-    for(size_t i = 0; i < _gameObjects.size(); i++)
+    if(!Platform::IsPaused())
+    {
+        for(size_t i = 0; i < _gameObjects.size(); i++)
         _gameObjects[i]->Update();
+    }
 }
 
 //Renders active GameObjects

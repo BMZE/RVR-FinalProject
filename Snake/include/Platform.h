@@ -57,6 +57,9 @@ public:
      */
     inline static SDL_Window* GetWindow() { return _pWindow; };
 
+
+    inline static bool IsPaused() { return _pause; }; 
+
 private:
 
     //Screen width & height
@@ -66,5 +69,7 @@ private:
     static SDL_Window* _pWindow; 
 
     static std::list<InputListener*> _listeners;
+
+    static bool _pause;
 };
 #endif

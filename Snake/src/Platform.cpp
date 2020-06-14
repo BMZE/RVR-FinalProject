@@ -10,6 +10,7 @@ SDL_Window* Platform::_pWindow = nullptr;
 const int Platform::SCREEN_WIDTH = 800;
 const int Platform::SCREEN_HEIGHT = 600;
 std::list<InputListener*> Platform::_listeners;
+bool Platform::_pause = false;
 
 #pragma endregion
 
@@ -51,6 +52,10 @@ bool Platform::Input()
             //TODO: SEND QUIT TO SERVER
             SDL_Quit();
             return false;
+        }
+        else if(e.key.keysym.sym == SDLK_p && e.type == SDL_KEYDOWN)
+        {
+            _pause = !_pause;
         }
         else
         {
