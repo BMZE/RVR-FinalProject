@@ -6,10 +6,13 @@ int main(int argc, char **argv)
 {
     Socket socket (argv[1], argv[2]);
 
-    // Message msg;
-    // msg._type = Message::LOGIN;
+    Message msg;
+    msg._type = Message::LOGIN;
 
-    // socket.send(msg, socket);
+    msg.to_bin();
+    msg.from_bin(msg.data());
+
+    socket.send(msg, socket);
 
     Message ms;
     ms._type = Message::LOGOUT;

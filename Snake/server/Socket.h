@@ -5,7 +5,7 @@
 //FORWARD DECLARATIONS
 class Socket;
 class Message;
-
+class Serializable;
 
 /**
  * Compares two sockets to determine if they are the same
@@ -26,7 +26,7 @@ public:
 
     int recv(Message &obj, Socket * &sock);
 
-    int send(Message& obj, const Socket& sock);
+    int send(Message &obj, const Socket& sock);
 
     int Bind();
 

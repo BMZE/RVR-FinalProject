@@ -10,7 +10,7 @@
 class Message : public Serializable
 {
 public:
-    Message(){};
+    Message();
     Message(const InputInfo &info);
     Message(const FruitInfo &info);
     ~Message();
@@ -25,8 +25,8 @@ public:
 
 private:
 
-    static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t);
-    static const size_t FRUIT_SIZE = sizeof(FruitInfo) + sizeof(uint8_t);
+    static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t) + sizeof(char);
+    static const size_t FRUIT_SIZE = sizeof(FruitInfo) + sizeof(uint8_t) + (sizeof(char) * 2);
 
     InputInfo _inputInfo;
     FruitInfo _fruitInfo;

@@ -24,7 +24,7 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
 
 $(BIN)/$(SERVER_EXE): ServerMain.cpp $(SERVER)/*.cpp 
-	$(CXX) $(CXX_FLAGS) -I$(SERVER) -L$(LIB) $^ -o $@ $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) -I$(SERVER) -L$(LIB)  $^ -o $@ $(LIBRARIES)
 
 $(BIN)/$(CLIENT_EXE): $(CLIENT)/*.cpp $(SERVER)/*.cpp
 	$(CXX) $(CXX_FLAGS) -L$(LIB) $^ -o $@ $(LIBRARIES)

@@ -62,6 +62,7 @@ int Socket::Bind()
 
 int Socket::recv(Message &obj, Socket * &sock)
 {
+    
     struct sockaddr sa;
     socklen_t sa_len = sizeof(struct sockaddr);
 
@@ -69,8 +70,10 @@ int Socket::recv(Message &obj, Socket * &sock)
 
     ssize_t bytes = ::recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sa, &sa_len);
 
+
     if ( bytes <= 0 )
     {
+        std::cout << "RETURN\n";
         return -1;
     }
 
@@ -81,6 +84,9 @@ int Socket::recv(Message &obj, Socket * &sock)
 
     obj.from_bin(buffer);
 
+    int t = obj._type;
+    std::cout << t << " type\n";
+    
     return 0;
 }
 
@@ -90,6 +96,8 @@ int Socket::send(Message& obj, const Socket& sock)
     //Serializar el objeto
     //Enviar el objeto binario a sock usando el socket sd
 
+    int t = obj._type;
+    std::cout << t << " type\n";
     obj.to_bin();
 
     int data = sendto(sd, (void*)obj.data(), obj.size(), 0, (struct sockaddr*)&sock.sa, sock.sa_len);

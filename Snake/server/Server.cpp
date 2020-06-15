@@ -4,8 +4,8 @@
 #include <string.h>
 #include <iostream>
 
-#include "Socket.h"
 #include "Message.h"
+#include "Socket.h"
 
 Server::Server(const char * s, const char * p)
 {
@@ -22,12 +22,12 @@ void Server::ProcessMessages()
 
     while(true)
     {
-        std::cout << "Running\n";
-
         Socket* client;
         Message msg;
         _socket->recv(msg, client);
 
+        int t = msg._type;
+        std::cout << "TYPE: " << t << '\n'; 
         switch(msg._type)
         {
             case Message::LOGIN:
@@ -65,6 +65,7 @@ void Server::ProcessMessages()
                     }
                     player++;
                 }
+                std::cout << "Logout\n";
             break;
         }
     }
@@ -72,7 +73,6 @@ void Server::ProcessMessages()
 
 Server::~Server()
 {
-    free(_socket);
     delete _socket;
     _socket = nullptr;
 }
