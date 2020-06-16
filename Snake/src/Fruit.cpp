@@ -44,6 +44,13 @@ FruitInfo Fruit::Rellocate(Game* g)
     }
 }
 
+FruitInfo Fruit::GetPosition()
+{
+    FruitInfo info; 
+    info.x = _xPos; info.y = _yPos;
+    return info; 
+}
+
 void Fruit::SetNewPosition(int x, int y, Game* g)
 {
     _xPos = x; _yPos = y; //new fruit position

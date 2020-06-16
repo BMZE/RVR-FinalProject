@@ -3,10 +3,11 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "Fruit.h"
-#include <iostream>
+// #include <iostream>
 #include <Platform.h>
 #include "Client.h"
 #include "FruitInfo.h"
+//#include "InputInfo.h"
 
 Game::Game()
 {
@@ -18,15 +19,27 @@ Game::Game()
     x /= TILE_PIXEL_SIZE;
     y /= TILE_PIXEL_SIZE;
 
-    _gameObjects.reserve(2);
-    _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", this));
+    _gameObjects.reserve(3);
+    _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
     _tilemap[x][y].empty = false; //player head node
     _tilemap[x][y].go = _gameObjects[0];
 
-    _gameObjects.push_back(new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp"));
+    x = 200; y = 500;
+    x /= TILE_PIXEL_SIZE;
+    y /= TILE_PIXEL_SIZE;
+
+    _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", false, this);
+    _gameObjects.push_back(_otherPlayer);
+    
+    _tilemap[x][y].empty = false; //player head node
+    _tilemap[x][y].go = _otherPlayer;
+
+    //FRUIT
+    _fruit = new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
+    _gameObjects.push_back(_fruit);
     _tilemap[20][5].empty = false;
-    _tilemap[20][5].go = _gameObjects[1];
+    _tilemap[20][5].go = _fruit;
 }
 
 //Updates active GameObjects
@@ -34,10 +47,13 @@ void Game::Update()
 {
     if(!Platform::IsPaused())
     {
-        for(size_t i = 0; i < _gameObjects.size(); i++)
-        _gameObjects[i]->Update();
+        for(size_t i = 0; i < _gameObjects.size(); i++) //update gameobjects
+        {
+            _gameObjects[i]->Update();
+        }
     }
 }
+
 
 //Renders active GameObjects
 void Game::Render()
@@ -46,22 +62,28 @@ void Game::Render()
         _gameObjects[i]->Render();
 }
 
+void Game::FruitRellocated(FruitInfo* info)
+{
+    std::cout << "FruitRellocated\n";
+    _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
+    _fruit->SetNewPosition(info->x, info->y, this);
+    std::cout << "NEW_FRUIT_POSITION\n";
+}
+
+void Game::SetInputInfo(InputInfo* info)
+{
+    std::cout << "INPUT_INFO\n";
+    _otherPlayer->SetInputInfo(info);
+} 
 
 
 //Relocates fruit once eaten
 void Game::FruitEaten(int x, int y)
 {
-    GameObject* fruit = _tilemap[x][y].go; //save fruit GameObject
     _tilemap[x][y] = Tile(); //reset tile
 
-    for(size_t i = 0; i < _gameObjects.size(); i++)
-    {
-        if(_gameObjects[i] == fruit)
-        {
-            FruitInfo info = static_cast<Fruit*>(_gameObjects[i])->Rellocate(this);
-            Client::SendFruit(info);
-        }
-    }
+    FruitInfo info = _fruit->Rellocate(this);
+    Client::SendFruit(info);
 }
 
 #pragma region TILE MAP
@@ -99,5 +121,6 @@ void Game::SetTile(int x, int y, Tile tile)
 Game::~Game()
 {
    //TODO: release players
-   //TODO: releasetiles
+   //TODO: release tiles
+   //TODO: releas fruit
 }

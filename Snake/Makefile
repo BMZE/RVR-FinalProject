@@ -8,7 +8,7 @@ LIB		:= lib
 SERVER 	:= server
 CLIENT 	:= client
 
-LIBRARIES	:= -lSDL2 -lSDL2main 
+LIBRARIES	:= -lSDL2 -lSDL2main -lpthread
 EXECUTABLE	:= snake
 SERVER_EXE	:= server
 CLIENT_EXE 	:= client

@@ -27,5 +27,7 @@ private:
      */
     Socket* _socket = nullptr;
 
+    const int MAX_PLAYERS = 2;
+
 };
 #endif

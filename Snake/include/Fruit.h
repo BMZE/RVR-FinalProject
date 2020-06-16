@@ -36,9 +36,13 @@ public:
      */
     FruitInfo Rellocate(Game* g);
 
-private:
+    FruitInfo GetPosition();
 
     void SetNewPosition(int x, int y, Game* g);
+    
+private:
+
+    
 
     int _xPos; //position in tilemap
     int _yPos;

@@ -18,8 +18,6 @@ void Server::ProcessMessages()
 {
     std::cout << "Snake server is running\n" << "Waiting for players to join\n";
 
-    int count = 0;
-
     while(true)
     {
         Socket* client;
@@ -29,9 +27,15 @@ void Server::ProcessMessages()
         switch(msg._type)
         {
             case Message::LOGIN:
-                count++;
-                _clients.push_back(client);
-                std::cout << "Player " << count << " joined the game\n";
+                if(_clients.size() < MAX_PLAYERS)
+                {
+                    _clients.push_back(client);
+                    std::cout << "Player " << _clients.size() << " joined the game\n";
+                }
+                else
+                {
+                    std::cout << "Maximum number of players reached\n";
+                }  
             break;
 
             case Message::INPUT:
@@ -59,8 +63,7 @@ void Server::ProcessMessages()
                     if((*sock == *client))
                     {
                         _clients.erase(_clients.begin() + player);
-                        std::cout << "Player " << count << " exited game" << std::endl;
-                        count--;
+                        std::cout << "Player " << player + 1 << " exited game" << std::endl;
                         break;
                     }
                     player++;

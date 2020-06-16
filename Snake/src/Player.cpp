@@ -7,8 +7,8 @@
 #include "Game.h"
 #include "Client.h"
 
-Player::Player(int x, int y, int size, const char* path, Game* g) 
-    : _xPos(x), _yPos(y), _size(size)
+Player::Player(int x, int y, int size, const char* path, bool player, Game* g) 
+    : _xPos(x), _yPos(y), _size(size), _player(player)
 {
     int width, height;    
     _texture = Renderer::LoadImage(path, &width, &height); //load texture
@@ -49,26 +49,34 @@ void Player::Render()
 
 //Handles input -> snake direction change
 void Player::Input()
-{
-    InputInfo info = Input::GetInputInfo();
+{   
+    if(_player)
+        _inputInfo = Input::GetInputInfo();
+    else
+    {
+        std::cout << "Problem\n";
+        std::cout << "Right: " << _inputInfo.right << '\n';
+        std::cout << "Problem2\n";
+    }
+    
     bool newDir = false;
 
-    if (info.right && (_direction == North || _direction == South)) //right
+    if (_inputInfo.right && (_direction == North || _direction == South)) //right
     {
         _direction = East;
         newDir = true; 
     }
-    else if(info.left && (_direction == North || _direction == South)) //left
+    else if(_inputInfo.left && (_direction == North || _direction == South)) //left
     {
         _direction = West;
         newDir = true; 
     }
-    else if(info.forward && (_direction == West || _direction == East)) //up
+    else if(_inputInfo.forward && (_direction == West || _direction == East)) //up
     {
         _direction = North;
         newDir = true; 
     }
-    else if(info.back && (_direction == West || _direction == East)) //down
+    else if(_inputInfo.back && (_direction == West || _direction == East)) //down
     {
         _direction = South;
         newDir = true; 
@@ -76,10 +84,18 @@ void Player::Input()
 
     if(newDir)
     {
-        Client::SendInput(info);
+        if(_player)
+            Client::SendInput(_inputInfo);
         DirectionChange();
        // DisplayDir();
     }
+}
+
+void Player::SetInputInfo(InputInfo* info)
+{
+    std::cout << "INPUT 3: " << info->right << '\n';
+    _inputInfo = *info;
+    std::cout << "INPUT 4: " << _inputInfo.right << '\n';
 }
 
 //Checks snake's possible collisions

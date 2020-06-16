@@ -34,13 +34,13 @@ public:
 
     uint8_t _type;
 
+    InputInfo _inputInfo;
+    FruitInfo _fruitInfo;
+
 private:
 
     static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t) + sizeof(char);
     static const size_t FRUIT_SIZE = sizeof(FruitInfo) + sizeof(uint8_t) + (sizeof(char) * 2);
-
-    InputInfo _inputInfo;
-    FruitInfo _fruitInfo;
 
     int32_t _size = 0;
 

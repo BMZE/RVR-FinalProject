@@ -4,15 +4,16 @@
 class Socket;
 class InputInfo;
 class FruitInfo;
+class Game;
 
 class Client
 {
 public:
-    static void Init(const char * s, const char * p);
+    static void Init(const char * s, const char * p, Game* g);
 
     static void Release();
 
-    static void net_thread();
+    static void* net_thread(void*);
 
     /**
      * Login to game server
@@ -34,16 +35,17 @@ public:
      * If the other player's direction has changed, 
      * receive new input information from server
      */
-    static bool RecvInput(); 
+    static void RecvInput(InputInfo info); 
 
     static void SendFruit(FruitInfo info);
 
-    static bool RecvFruit();
+    static void RecvFruit(FruitInfo info);
 
 private:
     static Socket* _socket;
     static volatile bool _rcvInput;
     static volatile bool _rcvFruit;
 
+    static Game* _game;
 };
 #endif

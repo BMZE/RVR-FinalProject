@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include "GameObject.h"
+#include "InputInfo.h"
 
 //FORWARDS DECLARATIONS
 class SDL_Texture;
@@ -13,7 +14,7 @@ class Game;
 class Player : public GameObject
 {
 public:
-    Player(int x, int y, int size, const char* path, Game* g);
+    Player(int x, int y, int size, const char* path, bool player, Game* g);
     ~Player();
 
     /**
@@ -30,6 +31,8 @@ public:
      * @return Type of GameObject (snake)
      */
     inline Type GetType(){ return _type; };
+
+    void SetInputInfo(InputInfo* info);
 
     enum Direction {North, East, South, West}; //snake direction
 
@@ -63,6 +66,10 @@ private:
     Game* _game; //reference to game instance
 
     bool _collision = false;
+
+    bool _player = false; //true if it's the player, false if other player
+
+    InputInfo _inputInfo;
 };
 
 

@@ -3,20 +3,36 @@
 #include "../server/Message.h"
 #include "InputInfo.h"
 #include "FruitInfo.h"
+#include <iostream>
+#include <pthread.h>
+#include "Game.h"
 
 #pragma region STATIC ATTRIBUTES
 
 Socket* Client::_socket = nullptr;
 volatile bool Client::_rcvInput = false;
 volatile bool Client::_rcvFruit = false;
+Game* Client::_game = nullptr;
 
 #pragma endregion
 
-void Client::Init(const char * s, const char * p)
+void Client::Init(const char * s, const char * p, Game* g)
 {
     _socket = new Socket(s, p);
+    _game = g;
+
+    //Create thread to receive messages from server
+    pthread_t recvThread;
+    pthread_attr_t attr;
+
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    int res = pthread_create(&recvThread, &attr, net_thread, NULL);
+
+    if(res != 0)
+        std::cout << "Error, Thread was not created\n";
+
     Login();
-    //_socket->Bind();
 }
 
 //Login to game server
@@ -50,33 +66,34 @@ void Client::SendFruit(FruitInfo info)
     _socket->send(msg, *_socket);
 }
 
-void Client::net_thread()
+void* Client::net_thread(void*)
 {
     while (true)
     {
+        Socket* server;
         Message msg;
-        _socket->recv(msg, _socket);
+        _socket->recv(msg, server);
 
         if(msg._type == Message::INPUT)
         {
-            _rcvInput = true;
+            RecvInput(msg._inputInfo);
         }    
         else if (msg._type == Message::FRUIT_EATEN)
         {
-            _rcvFruit = true;
+            RecvFruit(msg._fruitInfo);
         }
     }
     
 }
 
-bool Client::RecvInput()
+void Client::RecvInput(InputInfo  info)
 {
-    return _rcvInput;
+    _game->SetInputInfo(&info);
 }
 
-bool Client::RecvFruit()
+void Client::RecvFruit(FruitInfo info)
 {
-    return _rcvFruit;
+    _game->FruitRellocated(&info);
 }
 
 void Client::Release()

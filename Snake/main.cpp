@@ -1,6 +1,6 @@
 #include "Socket.h"
 #include "Message.h"
-#include "include/FruitInfo.h"
+#include "include/InputInfo.h"
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -11,14 +11,12 @@ int main(int argc, char **argv)
     msg._type = Message::LOGIN;
     socket.send(msg, socket);
 
-    FruitInfo info;
-    info.x = 55;
+    InputInfo info;
+    info.right = true;
     Message em(info);
-    em._type = Message::FRUIT_EATEN;
+    em._type = Message::INPUT;
 
     socket.send(em, socket);
-
-
 
     // Message ms;
     // ms._type = Message::LOGOUT;

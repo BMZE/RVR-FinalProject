@@ -1,8 +1,8 @@
 #include "Server.h"
 
-int main(int argc, char **argv)
+int main()
 {
-    Server server(argv[1], argv[2]);
+    Server server("127.0.0.1", "7777");
     server.ProcessMessages();
 
     return 0;

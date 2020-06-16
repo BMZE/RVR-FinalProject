@@ -8,7 +8,7 @@
 #include "Client.h"
 
 
-int main(int argc, char **argv) 
+int main() 
 {
     std::cout << "Initializing...\n";
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     Game game; 
 
-    Client::Init(argv[1], argv[2]);
+    Client::Init("127.0.0.1", "7777", &game);
     
     //game loop
     while(Platform::Input())
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
         Renderer::Present(); //display the new frame buffer  
-        SDL_Delay(130);      
+        SDL_Delay(200);      
     }
 
     //Release client resources
