@@ -1,13 +1,12 @@
 #ifndef _H_Message_H_
 #define _H_Message_H_
 
-#include "Serializable.h"
 #include <string>
 #include "../include/InputInfo.h"
 #include "../include/FruitInfo.h"
 
 
-class Message : public Serializable
+class Message
 {
 public:
     Message();
@@ -18,6 +17,18 @@ public:
     void to_bin();
 
     int from_bin(char * data);
+
+    /**
+     *  Devuelve un puntero al buffer interno con la representación del objeto.
+     *  Debe inicializarse previamente via Serializable::to_bin()
+     *    @return objeto serializado
+     */
+    inline char * data() { return _data; }
+
+    /**
+     *  @return tamaño del objeto serializado
+     */
+    inline int32_t size() { return _size; };
 
     enum MessageType { LOGIN, INPUT, FRUIT_EATEN, LOGOUT };
 
@@ -30,5 +41,9 @@ private:
 
     InputInfo _inputInfo;
     FruitInfo _fruitInfo;
+
+    int32_t _size = 0;
+
+    char *  _data = nullptr;
 };
 #endif

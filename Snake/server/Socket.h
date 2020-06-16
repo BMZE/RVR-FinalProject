@@ -5,7 +5,6 @@
 //FORWARD DECLARATIONS
 class Socket;
 class Message;
-class Serializable;
 
 /**
  * Compares two sockets to determine if they are the same

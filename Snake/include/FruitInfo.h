@@ -1,6 +1,8 @@
 #ifndef _H_FruitInfo_H_
 #define _H_FruitInfo_H_
 
+#include <string>
+
 struct FruitInfo
 {
     int x = 0; //fruit position in tilemap
@@ -11,7 +13,7 @@ struct FruitInfo
     {
         std::string str = std::to_string(x);
         str += '\0';
-        str = std::to_string(y);
+        str += std::to_string(y);
         str += '\0';
         return str;
     }
@@ -30,7 +32,6 @@ struct FruitInfo
         while(str[i] != '\0') { aux += str[i]; i++; };
 
         y = std::stoi(aux);
-
     }
 };
 #endif

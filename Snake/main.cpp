@@ -1,5 +1,6 @@
-#include "../server/Socket.h"
-#include "../server/Message.h"
+#include "Socket.h"
+#include "Message.h"
+#include "include/FruitInfo.h"
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -8,15 +9,20 @@ int main(int argc, char **argv)
 
     Message msg;
     msg._type = Message::LOGIN;
-
-    msg.to_bin();
-    msg.from_bin(msg.data());
-
     socket.send(msg, socket);
 
-    Message ms;
-    ms._type = Message::LOGOUT;
-    socket.send(ms, socket);
+    FruitInfo info;
+    info.x = 55;
+    Message em(info);
+    em._type = Message::FRUIT_EATEN;
+
+    socket.send(em, socket);
+
+
+
+    // Message ms;
+    // ms._type = Message::LOGOUT;
+    // socket.send(ms, socket);
 
     std::cout << "Messages sent\n";
 

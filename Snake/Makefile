@@ -13,17 +13,21 @@ EXECUTABLE	:= snake
 SERVER_EXE	:= server
 CLIENT_EXE 	:= client
 
-all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE)
+all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE) $(BIN)/$(CLIENT_EXE)
 
 run: clean all
 	clear
 	./$(BIN)/$(EXECUTABLE)
 	./$(BIN)/$(SERVER_EXE)
+	./$(BIN)/$(CLIENT_EXE)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp $(SERVER)/*.cpp  
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
 
 $(BIN)/$(SERVER_EXE): ServerMain.cpp $(SERVER)/*.cpp 
+	$(CXX) $(CXX_FLAGS) -I$(SERVER) -L$(LIB)  $^ -o $@ $(LIBRARIES)
+
+$(BIN)/$(CLIENT_EXE): main.cpp $(SERVER)/*.cpp  
 	$(CXX) $(CXX_FLAGS) -I$(SERVER) -L$(LIB)  $^ -o $@ $(LIBRARIES)
 
 clean:

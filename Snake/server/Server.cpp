@@ -40,7 +40,7 @@ void Server::ProcessMessages()
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
                 }
-                std::cout << "Input received\n";
+                //std::cout << "Input received\n";
             break;
 
             case Message::FRUIT_EATEN:
@@ -49,7 +49,7 @@ void Server::ProcessMessages()
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
                 }
-                std::cout << "Fruit received\n";
+                //std::cout << "Fruit received\n";
             break;
 
             case Message::LOGOUT:

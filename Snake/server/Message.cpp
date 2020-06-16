@@ -18,14 +18,15 @@ void Message::to_bin()
         char* tmp = _data; 
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
-        _data += sizeof(uint8_t);
+        tmp += sizeof(uint8_t);
 
         memcpy((void*)tmp, _inputInfo.toString().c_str(), sizeof(char) * (sizeof(InputInfo) + 1)); 
     }
     else if(_type == FRUIT_EATEN) //package fruit info
     {
-        _data = new char[FRUIT_SIZE];
         _size = FRUIT_SIZE;
+        _data = new char[FRUIT_SIZE];
+        
         char* tmp = _data;
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
@@ -48,7 +49,7 @@ int Message::from_bin(char * data)
     char* tmp = data;
     memcpy(&_type, tmp, sizeof(uint8_t)); //read type of message from data
     tmp += sizeof(uint8_t); 
-    
+
     if(_type == INPUT) //save inputinfo
     {
         char* str = new char[sizeof(char) * (sizeof(InputInfo) + 1)];
@@ -72,7 +73,7 @@ Message::~Message()
 {
     if(_data != nullptr)
     {
-        delete[] _data;
-        _data = nullptr;
+         delete[] _data;
+         _data = nullptr;
     }
 }
