@@ -10,9 +10,9 @@
 #pragma region STATIC ATTRIBUTES
 
 Socket* Client::_socket = nullptr;
-volatile bool Client::_rcvInput = false;
-volatile bool Client::_rcvFruit = false;
+volatile bool Client::_startGame = false;
 Game* Client::_game = nullptr;
+char Client::_id = '0';
 
 #pragma endregion
 
@@ -81,6 +81,11 @@ void* Client::net_thread(void*)
         else if (msg._type == Message::FRUIT_EATEN)
         {
             RecvFruit(msg._fruitInfo);
+        }
+        else if(msg._type == Message::START)
+        {
+            _id = msg._player;
+            _startGame = true;
         }
     }
     

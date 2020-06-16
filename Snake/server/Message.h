@@ -30,9 +30,11 @@ public:
      */
     inline int32_t size() { return _size; };
 
-    enum MessageType { LOGIN, INPUT, FRUIT_EATEN, LOGOUT };
+    enum MessageType { LOGIN, START, INPUT, FRUIT_EATEN, LOGOUT };
 
     uint8_t _type;
+
+    char _player;
 
     InputInfo _inputInfo;
     FruitInfo _fruitInfo;

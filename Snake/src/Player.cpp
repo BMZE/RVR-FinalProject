@@ -52,12 +52,6 @@ void Player::Input()
 {   
     if(_player)
         _inputInfo = Input::GetInputInfo();
-    else
-    {
-        std::cout << "Problem\n";
-        std::cout << "Right: " << _inputInfo.right << '\n';
-        std::cout << "Problem2\n";
-    }
     
     bool newDir = false;
 
@@ -85,7 +79,10 @@ void Player::Input()
     if(newDir)
     {
         if(_player)
-            Client::SendInput(_inputInfo);
+            Client::SendInput(_inputInfo); //Send new dir over network
+        else
+            _inputInfo = InputInfo(); //reset inputinfo
+        
         DirectionChange();
        // DisplayDir();
     }
@@ -93,9 +90,7 @@ void Player::Input()
 
 void Player::SetInputInfo(InputInfo* info)
 {
-    std::cout << "INPUT 3: " << info->right << '\n';
     _inputInfo = *info;
-    std::cout << "INPUT 4: " << _inputInfo.right << '\n';
 }
 
 //Checks snake's possible collisions

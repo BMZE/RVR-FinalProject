@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "Fruit.h"
-// #include <iostream>
+#include <iostream>
 #include <Platform.h>
 #include "Client.h"
 #include "FruitInfo.h"
@@ -11,29 +11,19 @@
 
 Game::Game()
 {
+
+}
+
+void Game::Init()
+{
     InitTilemap();//Create TileMap
 
     //TODO: final 
     //create players
-    int x = 400; int y = 500;
-    x /= TILE_PIXEL_SIZE;
-    y /= TILE_PIXEL_SIZE;
-
     _gameObjects.reserve(3);
-    _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _gameObjects[0];
-
-    x = 200; y = 500;
-    x /= TILE_PIXEL_SIZE;
-    y /= TILE_PIXEL_SIZE;
-
-    _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", false, this);
-    _gameObjects.push_back(_otherPlayer);
+    InitPlayers();
     
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _otherPlayer;
 
     //FRUIT
     _fruit = new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
@@ -62,22 +52,75 @@ void Game::Render()
         _gameObjects[i]->Render();
 }
 
-void Game::FruitRellocated(FruitInfo* info)
+//Creates depending if Player 1 || Player 2
+void Game::InitPlayers()
 {
-    std::cout << "FruitRellocated\n";
-    _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
-    _fruit->SetNewPosition(info->x, info->y, this);
-    std::cout << "NEW_FRUIT_POSITION\n";
+    if(Client::GetID() == '1') //player 1
+    {
+        int x = 400; int y = 500;
+        x /= TILE_PIXEL_SIZE;
+        y /= TILE_PIXEL_SIZE;
+    
+        _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
+    
+        _tilemap[x][y].empty = false; //player head node
+        _tilemap[x][y].go = _gameObjects[0];
+
+        x = 200; y = 500;
+        x /= TILE_PIXEL_SIZE;
+        y /= TILE_PIXEL_SIZE;
+
+        _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+        _gameObjects.push_back(_otherPlayer);
+    
+        _tilemap[x][y].empty = false; //player head node
+        _tilemap[x][y].go = _otherPlayer;
+    }
+    else if(Client::GetID() == '2') //player 2
+    {
+        int x = 200; int y = 500;
+        x /= TILE_PIXEL_SIZE;
+        y /= TILE_PIXEL_SIZE;
+    
+        _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
+    
+        _tilemap[x][y].empty = false; //player head node
+        _tilemap[x][y].go = _gameObjects[0];
+
+        x = 400; y = 500;
+        x /= TILE_PIXEL_SIZE;
+        y /= TILE_PIXEL_SIZE;
+
+        _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+        _gameObjects.push_back(_otherPlayer);
+    
+        _tilemap[x][y].empty = false; //player head node
+        _tilemap[x][y].go = _otherPlayer;
+    }
+    else
+    {
+        std::cout << "Error creating players\n";
+    }
+    
+    
 }
 
+//Sets other player's new input info
 void Game::SetInputInfo(InputInfo* info)
 {
-    std::cout << "INPUT_INFO\n";
     _otherPlayer->SetInputInfo(info);
 } 
 
+#pragma region FRUIT RELOCATION
 
-//Relocates fruit once eaten
+//Relocates fruit once eaten, does NOT select new fruit location
+void Game::FruitRellocated(FruitInfo* info)
+{
+    _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
+    _fruit->SetNewPosition(info->x, info->y, this);
+}
+
+//Relocates fruit once eaten, chooses new fruit location
 void Game::FruitEaten(int x, int y)
 {
     _tilemap[x][y] = Tile(); //reset tile
@@ -85,6 +128,8 @@ void Game::FruitEaten(int x, int y)
     FruitInfo info = _fruit->Rellocate(this);
     Client::SendFruit(info);
 }
+
+#pragma endregion
 
 #pragma region TILE MAP
 

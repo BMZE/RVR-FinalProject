@@ -28,9 +28,14 @@ int main()
 	double maxPeriod = 1.0 / rate;
 
     Game game; 
-
     Client::Init("127.0.0.1", "7777", &game);
-    
+
+    std::cout << "Waiting for other players\n";
+
+    while(!Client::GameStart()); //wait until server is ready
+
+    game.Init(); //initializes game
+
     //game loop
     while(Platform::Input())
     {

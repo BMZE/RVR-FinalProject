@@ -2,7 +2,7 @@
 #define _H_Game_H_
 #include <vector>
 #include "InputInfo.h"
-#include <iostream>
+
 //FORWARD DECLARATIONS
 class Player;
 class GameObject;
@@ -21,6 +21,11 @@ class Game
 public:
     Game();
     ~Game();
+
+    /**
+     * Initializes game (tilemap, players, fruit)
+     */
+    void Init();
 
     /**
      * Updates GameObjects
@@ -54,11 +59,11 @@ public:
 
     void SetInputInfo(InputInfo* info);
 
-    InputInfo* _inputInfo = nullptr;
-
 private: 
 
     void InitTilemap(); //Initializes the tile map
+
+    void InitPlayers(); //Creates depending if Player 1 || Player 2
 
     const int TILE_PIXEL_SIZE = 20; 
     

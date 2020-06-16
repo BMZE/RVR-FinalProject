@@ -41,11 +41,15 @@ public:
 
     static void RecvFruit(FruitInfo info);
 
+    static inline bool GameStart(){ return _startGame; };
+
+    static inline char GetID() { return _id; };
+
 private:
     static Socket* _socket;
-    static volatile bool _rcvInput;
-    static volatile bool _rcvFruit;
+    static volatile bool _startGame;
 
     static Game* _game;
+    static char _id;
 };
 #endif

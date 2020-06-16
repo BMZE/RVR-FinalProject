@@ -34,7 +34,18 @@ void Message::to_bin()
 
         memcpy((void*)tmp, _fruitInfo.toString().c_str(), sizeof(char) * (sizeof(FruitInfo) + 2)); 
     }
-    else //LOGIN OR LOGOUT
+    else if(_type == Message::START) //package start info
+    {
+        _size = sizeof(uint8_t) + sizeof(char);
+        _data = new char[_size];
+        
+        char* tmp = _data;
+
+        memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
+        tmp += sizeof(uint8_t);
+        memcpy(tmp, &_player, sizeof(char));
+    }
+    else //LOGIN OR LOGOUT 
     {
         _data = new char[sizeof(uint8_t)];
         _size = sizeof(uint8_t);
@@ -64,6 +75,10 @@ int Message::from_bin(char * data)
         memcpy(&str[0], tmp, sizeof(char) * (sizeof(FruitInfo) + 2));
         _fruitInfo.fromString(str);
         delete[] str; 
+    }
+    else if(_type == Message::START) //save start info
+    {
+        memcpy(&_player, tmp, sizeof(char));
     }
 
     return 0;

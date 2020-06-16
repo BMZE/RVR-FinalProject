@@ -31,6 +31,16 @@ void Server::ProcessMessages()
                 {
                     _clients.push_back(client);
                     std::cout << "Player " << _clients.size() << " joined the game\n";
+                    
+                    if(_clients.size() == MAX_PLAYERS)
+                    {
+                        Message ms; ms._type  = Message::START;
+                        for(int i = 0; i < _clients.size(); i++)
+                        {
+                            ms._player = (i + 1) + '0';
+                            _socket->send(ms, *_clients[i]);
+                        }
+                    }
                 }
                 else
                 {
@@ -63,6 +73,7 @@ void Server::ProcessMessages()
                     if((*sock == *client))
                     {
                         _clients.erase(_clients.begin() + player);
+                        //TODO: REVISE FOR CORRECT PLAYER ID
                         std::cout << "Player " << player + 1 << " exited game" << std::endl;
                         break;
                     }
