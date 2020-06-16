@@ -26,8 +26,6 @@ void Server::ProcessMessages()
         Message msg;
         _socket->recv(msg, client);
 
-        int t = msg._type;
-        std::cout << "TYPE: " << t << '\n'; 
         switch(msg._type)
         {
             case Message::LOGIN:
@@ -42,6 +40,7 @@ void Server::ProcessMessages()
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
                 }
+                std::cout << "Input received\n";
             break;
 
             case Message::FRUIT_EATEN:
@@ -50,6 +49,7 @@ void Server::ProcessMessages()
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
                 }
+                std::cout << "Fruit received\n";
             break;
 
             case Message::LOGOUT:
@@ -65,7 +65,6 @@ void Server::ProcessMessages()
                     }
                     player++;
                 }
-                std::cout << "Logout\n";
             break;
         }
     }

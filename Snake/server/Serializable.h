@@ -8,7 +8,7 @@ class Serializable
 {
 public:
 
-    Serializable():_size(0), _data(0){};
+    Serializable():_size(0), _data(nullptr){};
 
     virtual ~Serializable();
 

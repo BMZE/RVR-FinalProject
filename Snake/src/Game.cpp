@@ -5,6 +5,8 @@
 #include "Fruit.h"
 #include <iostream>
 #include <Platform.h>
+#include "Client.h"
+#include "FruitInfo.h"
 
 Game::Game()
 {
@@ -56,7 +58,8 @@ void Game::FruitEaten(int x, int y)
     {
         if(_gameObjects[i] == fruit)
         {
-            static_cast<Fruit*>(_gameObjects[i])->Rellocate(this);
+            FruitInfo info = static_cast<Fruit*>(_gameObjects[i])->Rellocate(this);
+            Client::SendFruit(info);
         }
     }
 }

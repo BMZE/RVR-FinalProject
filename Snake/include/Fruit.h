@@ -7,6 +7,7 @@
 class SDL_Texture;
 class SDL_Rect;
 class Game;
+class FruitInfo;
 
 class Fruit : public GameObject 
 {
@@ -33,9 +34,11 @@ public:
     /**
      * When fruit is eaten, fruit changes position
      */
-    void Rellocate(Game* g);
+    FruitInfo Rellocate(Game* g);
 
 private:
+
+    void SetNewPosition(int x, int y, Game* g);
 
     int _xPos; //position in tilemap
     int _yPos;

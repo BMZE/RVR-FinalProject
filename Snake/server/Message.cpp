@@ -11,12 +11,10 @@ Message::Message(const FruitInfo &info) : _fruitInfo(info){}
 
 void Message::to_bin()
 {
-    int t = _type;
-    std::cout << "Type: " << t << '\n';
-
     if(_type == INPUT) //package input info
     {
-        alloc_data(INPUT_SIZE);
+        _data = new char[INPUT_SIZE];
+        _size = INPUT_SIZE; 
         char* tmp = _data; 
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
@@ -26,7 +24,8 @@ void Message::to_bin()
     }
     else if(_type == FRUIT_EATEN) //package fruit info
     {
-        alloc_data(FRUIT_SIZE);
+        _data = new char[FRUIT_SIZE];
+        _size = FRUIT_SIZE;
         char* tmp = _data;
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
@@ -36,7 +35,8 @@ void Message::to_bin()
     }
     else //LOGIN OR LOGOUT
     {
-        alloc_data(sizeof(uint8_t));
+        _data = new char[sizeof(uint8_t)];
+        _size = sizeof(uint8_t);
         memcpy((void*)_data, (void*)&_type, sizeof(uint8_t));
     }
     
@@ -48,10 +48,6 @@ int Message::from_bin(char * data)
     char* tmp = data;
     memcpy(&_type, tmp, sizeof(uint8_t)); //read type of message from data
     tmp += sizeof(uint8_t); 
-
-    int t = _type;
-    
-    std::cout << "Deserialize: " << t << '\n';
     
     if(_type == INPUT) //save inputinfo
     {
@@ -74,9 +70,9 @@ int Message::from_bin(char * data)
 
 Message::~Message()
 {
-    // if(_data != nullptr)
-    // {
-    //     delete[] _data;
-    //     _data = nullptr;
-    // }
+    if(_data != nullptr)
+    {
+        delete[] _data;
+        _data = nullptr;
+    }
 }

@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include <iostream>
 #include "Game.h"
+#include "FruitInfo.h"
 
 Fruit::Fruit(int x, int y, int size, const char* path) : _xPos(x), _yPos(y), _size(size)
 {
@@ -24,7 +25,7 @@ void Fruit::Render()
 }
 
 //When fruit is eaten, fruit changes position
-void Fruit::Rellocate(Game* g)
+FruitInfo Fruit::Rellocate(Game* g)
 {
     while(true)
     {
@@ -35,13 +36,20 @@ void Fruit::Rellocate(Game* g)
         //if tile is free and not the same as current
         if((x != _xPos && y != _yPos) && g->GetTilemap()[x][y].empty) 
         {
-            _xPos = x; _yPos = y; //new fruit position
-            Tile tile;
-            tile.empty = false; tile.go = this;
-            g->SetTile(x, y, tile);
-            break;
+            SetNewPosition(x, y, g);   
+            FruitInfo info; 
+            info.x = x; info.y = y;   
+            return info;
         }
     }
+}
+
+void Fruit::SetNewPosition(int x, int y, Game* g)
+{
+    _xPos = x; _yPos = y; //new fruit position
+    Tile tile;
+    tile.empty = false; tile.go = this;
+    g->SetTile(x, y, tile);
 }
 
 Fruit::~Fruit()

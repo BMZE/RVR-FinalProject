@@ -5,6 +5,8 @@
 #include "Game.h"
 #include <time.h>
 #include <SDL2/SDL.h>
+#include "Client.h"
+
 
 int main(int argc, char **argv) 
 {
@@ -26,6 +28,8 @@ int main(int argc, char **argv)
 	double maxPeriod = 1.0 / rate;
 
     Game game; 
+
+    Client::Init(argv[1], argv[2]);
     
     //game loop
     while(Platform::Input())
@@ -49,6 +53,9 @@ int main(int argc, char **argv)
         Renderer::Present(); //display the new frame buffer  
         SDL_Delay(130);      
     }
+
+    //Release client resources
+    Client::Release();
 
     //Release SDL
     Input::Release();

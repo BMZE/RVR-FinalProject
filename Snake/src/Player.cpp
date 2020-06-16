@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "InputInfo.h"
 #include "Game.h"
+#include "Client.h"
 
 Player::Player(int x, int y, int size, const char* path, Game* g) 
     : _xPos(x), _yPos(y), _size(size)
@@ -50,31 +51,34 @@ void Player::Render()
 void Player::Input()
 {
     InputInfo info = Input::GetInputInfo();
-    
+    bool newDir = false;
+
     if (info.right && (_direction == North || _direction == South)) //right
     {
         _direction = East;
-        DirectionChange();
-        DisplayDir();
+        newDir = true; 
     }
     else if(info.left && (_direction == North || _direction == South)) //left
     {
         _direction = West;
-
-        DirectionChange();
-        DisplayDir();
+        newDir = true; 
     }
     else if(info.forward && (_direction == West || _direction == East)) //up
     {
         _direction = North;
-        DirectionChange();
-        DisplayDir();
+        newDir = true; 
     }
     else if(info.back && (_direction == West || _direction == East)) //down
     {
         _direction = South;
+        newDir = true; 
+    }
+
+    if(newDir)
+    {
+        Client::SendInput(info);
         DirectionChange();
-        DisplayDir();
+       // DisplayDir();
     }
 }
 
@@ -84,14 +88,14 @@ bool Player::OnCollision()
     if(_xPos < 0 || _xPos >= _game->GetTilemap().size()
         || _yPos < 0 || _yPos >= _game->GetTilemap()[0].size()) //Out of bounds collision
     {
-        printf("OUT OF BOUNDS\n");
+        //printf("OUT OF BOUNDS\n");
         _collision = true; //snake collided
         return true;
     }  
     else if(!_game->GetTilemap()[_xPos][_yPos].empty
         && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Snake) //collision with snake
     {
-        std::cout << "COLLISION WITH SNAKE\n"; //stops snake
+        //std::cout << "COLLISION WITH SNAKE\n"; //stops snake
         _collision = true; //snake collided
         return true;
     }
@@ -102,7 +106,7 @@ bool Player::OnCollision()
 
         AddNode();
 
-        std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
+       // std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
         return false;
     }   
 
@@ -165,7 +169,7 @@ void Player::AddNode()
     
     _game->SetTile(x, y, tile); //set node info on tilemap
     
-    std::cout << _snake.size() << '\n';
+   // std::cout << _snake.size() << '\n';
 }
 
 //Set head in new tile position 
