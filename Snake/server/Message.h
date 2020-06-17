@@ -2,8 +2,8 @@
 #define _H_Message_H_
 
 #include <string>
-#include "../include/InputInfo.h"
-#include "../include/FruitInfo.h"
+#include "InputInfo.h"
+#include "FruitInfo.h"
 
 
 class Message
@@ -30,7 +30,7 @@ public:
      */
     inline int32_t size() { return _size; };
 
-    enum MessageType { LOGIN, START, INPUT, FRUIT_EATEN, LOGOUT };
+    enum MessageType { LOGIN, INIT, READY, START, INPUT, FRUIT_EATEN, LOGOUT };
 
     uint8_t _type;
 

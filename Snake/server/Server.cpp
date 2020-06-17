@@ -32,14 +32,19 @@ void Server::ProcessMessages()
                     _clients.push_back(client);
                     std::cout << "Player " << _clients.size() << " joined the game\n";
                     
-                    if(_clients.size() == MAX_PLAYERS)
+                    if(_clients.size() == MAX_PLAYERS) //TODO:change to INIT -> READY -> START
                     {
-                        Message ms; ms._type  = Message::START;
-                        for(int i = 0; i < _clients.size(); i++)
-                        {
-                            ms._player = (i + 1) + '0';
-                            _socket->send(ms, *_clients[i]);
-                        }
+                        Message ms; ms._type  = Message::INIT;
+                        /**
+                         * Send init message with player id to clients
+                         * Create thread for game to run on
+                         * once server and all clients ready, START game
+                         */
+                        // for(int i = 0; i < _clients.size(); i++)
+                        // {
+                        //     ms._player = (i + 1) + '0';
+                        //     _socket->send(ms, *_clients[i]);
+                        // }
                     }
                 }
                 else
@@ -49,7 +54,7 @@ void Server::ProcessMessages()
             break;
 
             case Message::INPUT:
-                for(Socket* sock: _clients)
+                for(Socket* sock: _clients) //TODO: send to game
                 {
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
@@ -58,7 +63,7 @@ void Server::ProcessMessages()
             break;
 
             case Message::FRUIT_EATEN:
-                for(Socket* sock: _clients)
+                for(Socket* sock: _clients) //TODO: send to game
                 {
                      if(!(*sock == *client))
                         _socket->send(msg, *sock);
