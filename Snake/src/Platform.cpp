@@ -7,8 +7,8 @@
 #pragma region  STATIC ATTRIBUTES
 
 SDL_Window* Platform::_pWindow = nullptr;
-const int Platform::SCREEN_WIDTH = 800;
-const int Platform::SCREEN_HEIGHT = 600;
+const int Platform::SCREEN_WIDTH = 600;//800;
+const int Platform::SCREEN_HEIGHT = 400;//600;
 std::list<InputListener*> Platform::_listeners;
 bool Platform::_pause = false;
 

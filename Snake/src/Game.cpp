@@ -24,8 +24,7 @@ void Game::Init()
     
     InitPlayers();
     
-
-    //FRUIT
+    //Init fruit 
     _fruit = new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
     _gameObjects.push_back(_fruit);
     _tilemap[20][5].empty = false;
@@ -37,10 +36,8 @@ void Game::Update()
 {
     if(!Platform::IsPaused())
     {
-        for(size_t i = 0; i < _gameObjects.size(); i++) //update gameobjects
-        {
-            _gameObjects[i]->Update();
-        }
+        for(auto* go : _gameObjects) //update gameobjects
+            go->Update();
     }
 }
 
@@ -48,8 +45,8 @@ void Game::Update()
 //Renders active GameObjects
 void Game::Render()
 {   
-    for(size_t i = 0; i < _gameObjects.size(); i++)
-        _gameObjects[i]->Render();
+    for(auto* go : _gameObjects)
+        go->Render();
 }
 
 //Creates depending if Player 1 || Player 2
@@ -57,19 +54,14 @@ void Game::InitPlayers()
 {
     if(Client::GetID() == '1') //player 1
     {
-        int x = 400; int y = 500;
-        x /= TILE_PIXEL_SIZE;
-        y /= TILE_PIXEL_SIZE;
+        int x = 25; int y = 19;
     
         _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
         _tilemap[x][y].empty = false; //player head node
         _tilemap[x][y].go = _gameObjects[0];
 
-        x = 200; y = 500;
-        x /= TILE_PIXEL_SIZE;
-        y /= TILE_PIXEL_SIZE;
-
+        x = 5; y = 19;
         _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
         _gameObjects.push_back(_otherPlayer);
     
@@ -78,18 +70,14 @@ void Game::InitPlayers()
     }
     else if(Client::GetID() == '2') //player 2
     {
-        int x = 200; int y = 500;
-        x /= TILE_PIXEL_SIZE;
-        y /= TILE_PIXEL_SIZE;
+        int x = 5; int y = 19;
     
         _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
         _tilemap[x][y].empty = false; //player head node
         _tilemap[x][y].go = _gameObjects[0];
 
-        x = 400; y = 500;
-        x /= TILE_PIXEL_SIZE;
-        y /= TILE_PIXEL_SIZE;
+        x = 25; y = 19;
 
         _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
         _gameObjects.push_back(_otherPlayer);
@@ -118,6 +106,7 @@ void Game::FruitRellocated(FruitInfo* info)
 {
     _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
     _fruit->SetNewPosition(info->x, info->y, this);
+    _otherPlayer->AddNode(); //add node to the other player
 }
 
 //Relocates fruit once eaten, chooses new fruit location

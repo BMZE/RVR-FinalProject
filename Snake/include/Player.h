@@ -34,6 +34,11 @@ public:
 
     void SetInputInfo(InputInfo* info);
 
+    /**
+     * Adds new node to the snake list with correct direction to follow
+     */
+    void AddNode(); 
+
     enum Direction {North, East, South, West}; //snake direction
 
 private:
@@ -47,8 +52,6 @@ private:
     void SetNewPosition(); //Sets all snake nodes in new tile position
     
     bool OnCollision(); //Checks snake's possible collisions
-
-    void AddNode(); //adds new node to the snake list with correct direction to follow
 
     void DisplayDir(); //debug method for current snake direction
     

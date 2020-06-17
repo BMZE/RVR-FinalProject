@@ -110,11 +110,12 @@ bool Player::OnCollision()
         _collision = true; //snake collided
         return true;
     }
-    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
+    //if not acting as playing player, but server player, fruit collision should not be handled
+    //TODO: not call collisions unles player
+    else if(_player && !_game->GetTilemap()[_xPos][_yPos].empty 
          && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
     {
         _game->FruitEaten(_xPos, _yPos);
-
         AddNode();
 
        // std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
