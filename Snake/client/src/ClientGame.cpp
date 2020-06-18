@@ -1,38 +1,40 @@
-#include "Game.h"
-#include "Player.h"
+#include "ClientGame.h"
+#include "ClientPlayer.h"
 #include "Renderer.h"
 #include "GameObject.h"
-#include "Fruit.h"
+#include "ClientFruit.h"
 #include <iostream>
 #include <Platform.h>
 #include "Client.h"
 #include "FruitInfo.h"
 //#include "InputInfo.h"
 
-Game::Game()
+ClientGame::ClientGame()
 {
 
 }
 
-void Game::Init()
+void ClientGame::Init()
 {
     InitTilemap();//Create TileMap
 
     //TODO: final 
     //create players
-    _gameObjects.reserve(3);
+    // _gameObjects.reserve(3);
     
-    InitPlayers();
+    // InitPlayers();
     
+    _gameObjects.reserve(1);
+
     //Init fruit 
-    _fruit = new Fruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
+    _fruit = new ClientFruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
     _gameObjects.push_back(_fruit);
     _tilemap[20][5].empty = false;
     _tilemap[20][5].go = _fruit;
 }
 
 //Updates active GameObjects
-void Game::Update()
+void ClientGame::Update()
 {
     if(!Platform::IsPaused())
     {
@@ -43,26 +45,26 @@ void Game::Update()
 
 
 //Renders active GameObjects
-void Game::Render()
+void ClientGame::Render()
 {   
     for(auto* go : _gameObjects)
         go->Render();
 }
 
 //Creates depending if Player 1 || Player 2
-void Game::InitPlayers()
+void ClientGame::InitPlayers()
 {
     if(Client::GetID() == '1') //player 1
     {
         int x = 25; int y = 19;
     
-        _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
+        _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
         _tilemap[x][y].empty = false; //player head node
         _tilemap[x][y].go = _gameObjects[0];
 
         x = 5; y = 19;
-        _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+        _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
         _gameObjects.push_back(_otherPlayer);
     
         _tilemap[x][y].empty = false; //player head node
@@ -72,14 +74,14 @@ void Game::InitPlayers()
     {
         int x = 5; int y = 19;
     
-        _gameObjects.push_back(new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
+        _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
         _tilemap[x][y].empty = false; //player head node
         _tilemap[x][y].go = _gameObjects[0];
 
         x = 25; y = 19;
 
-        _otherPlayer = new Player(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+        _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
         _gameObjects.push_back(_otherPlayer);
     
         _tilemap[x][y].empty = false; //player head node
@@ -94,7 +96,7 @@ void Game::InitPlayers()
 }
 
 //Sets other player's new input info
-void Game::SetInputInfo(InputInfo* info)
+void ClientGame::SetInputInfo(InputInfo* info)
 {
     _otherPlayer->SetInputInfo(info);
 } 
@@ -102,15 +104,15 @@ void Game::SetInputInfo(InputInfo* info)
 #pragma region FRUIT RELOCATION
 
 //Relocates fruit once eaten, does NOT select new fruit location
-void Game::FruitRellocated(FruitInfo* info)
+void ClientGame::FruitRellocated(FruitInfo* info)
 {
     _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
     _fruit->SetNewPosition(info->x, info->y, this);
-    _otherPlayer->AddNode(); //add node to the other player
+   // _otherPlayer->AddNode(); //add node to the other player
 }
 
 //Relocates fruit once eaten, chooses new fruit location
-void Game::FruitEaten(int x, int y)
+void ClientGame::FruitEaten(int x, int y)
 {
     _tilemap[x][y] = Tile(); //reset tile
 
@@ -123,7 +125,7 @@ void Game::FruitEaten(int x, int y)
 #pragma region TILE MAP
 
 //Initializes the tile map
-void Game::InitTilemap()
+void ClientGame::InitTilemap()
 {
     //number of tiles depending on window size
     int width = Renderer::GetScreenWidth() / TILE_PIXEL_SIZE;
@@ -139,20 +141,20 @@ void Game::InitTilemap()
 }
 
 //Returns the tile map info
-std::vector<std::vector<Tile>> Game::GetTilemap()
+std::vector<std::vector<Tile>> ClientGame::GetTilemap()
 {
     return _tilemap;
 }
 
 //Modifies info in tile map
-void Game::SetTile(int x, int y, Tile tile)
+void ClientGame::SetTile(int x, int y, Tile tile)
 {
     _tilemap[x][y] = tile;
 }
 
 #pragma endregion
 
-Game::~Game()
+ClientGame::~ClientGame()
 {
    //TODO: release players
    //TODO: release tiles

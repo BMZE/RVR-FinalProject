@@ -1,5 +1,5 @@
-#ifndef _H_Player_H_
-#define _H_Player_H_
+#ifndef _H_ClientPlayer_H_
+#define _H_ClientPlayer_H_
 #include <list>
 #include <vector>
 #include "GameObject.h"
@@ -9,13 +9,13 @@
 class SDL_Texture;
 class SDL_Rect;
 class Node;
-class Game;
+class ClientGame;
 
-class Player : public GameObject
+class ClientPlayer : public GameObject
 {
 public:
-    Player(int x, int y, int size, const char* path, bool player, Game* g);
-    ~Player();
+    ClientPlayer(int x, int y, int size, const char* path, bool player, ClientGame* g);
+    ~ClientPlayer();
 
     /**
      * Updates snake
@@ -66,7 +66,7 @@ private:
 
     std::list<Node*> _snake;
 
-    Game* _game; //reference to game instance
+    ClientGame* _game; //reference to game instance
 
     bool _collision = false;
 
@@ -88,8 +88,8 @@ public:
     Node* father = nullptr;
     Node* next = nullptr; 
 
-    Player::Direction currentDirection = Player::Direction::North;
-    Player::Direction lastDirecion = Player::Direction::North;
+    ClientPlayer::Direction currentDirection = ClientPlayer::Direction::North;
+    ClientPlayer::Direction lastDirecion = ClientPlayer::Direction::North;
 
     //update pos from before method
     void UpdatePosition()

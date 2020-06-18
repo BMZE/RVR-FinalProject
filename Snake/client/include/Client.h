@@ -4,12 +4,12 @@
 class Socket;
 class InputInfo;
 class FruitInfo;
-class Game;
+class ClientGame;
 
 class Client
 {
 public:
-    static void Init(const char * s, const char * p, Game* g);
+    static void Init(const char * s, const char * p, ClientGame* g);
 
     static void Release();
 
@@ -32,6 +32,13 @@ public:
     static void SendInput(InputInfo info);
 
     /**
+     * Notifies server that the client's game has been initialized
+     * and is ready to start
+     */
+    static void SendGameReady();
+
+
+    /**
      * If the other player's direction has changed, 
      * receive new input information from server
      */
@@ -49,7 +56,7 @@ private:
     static Socket* _socket;
     static volatile bool _startGame;
 
-    static Game* _game;
+    static ClientGame* _game;
     static char _id;
 };
 #endif

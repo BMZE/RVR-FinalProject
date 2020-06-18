@@ -3,9 +3,13 @@
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
+#include <pthread.h>
 
 #include "Message.h"
 #include "Socket.h"
+#include "../ServerGame/include/ServerGame.h"
+
+ServerGame* Server::_game  = nullptr;
 
 Server::Server(const char * s, const char * p)
 {
@@ -17,6 +21,7 @@ Server::Server(const char * s, const char * p)
 void Server::ProcessMessages()
 {
     std::cout << "Snake server is running\n" << "Waiting for players to join\n";
+    int playersReady = 0;
 
     while(true)
     {
@@ -27,14 +32,13 @@ void Server::ProcessMessages()
         switch(msg._type)
         {
             case Message::LOGIN:
-                if(_clients.size() < MAX_PLAYERS)
-                {
+                // if(_clients.size() < MAX_PLAYERS)
+                // {
                     _clients.push_back(client);
                     std::cout << "Player " << _clients.size() << " joined the game\n";
                     
-                    if(_clients.size() == MAX_PLAYERS) //TODO:change to INIT -> READY -> START
-                    {
-                        Message ms; ms._type  = Message::INIT;
+                    //TODO:change to INIT -> READY -> START
+                        
                         /**
                          * Send init message with player id to clients
                          * Create thread for game to run on
@@ -45,12 +49,21 @@ void Server::ProcessMessages()
                         //     ms._player = (i + 1) + '0';
                         //     _socket->send(ms, *_clients[i]);
                         // }
-                    }
-                }
-                else
+                // }
+                // else
+                // {
+                //     std::cout << "Maximum number of players reached\n";
+                // }  
+            break;
+
+            case Message::READY:
+                playersReady++;
+                if(playersReady == MAX_PLAYERS) //TODO:change to INIT -> READY -> START
                 {
-                    std::cout << "Maximum number of players reached\n";
-                }  
+                    CreateGameThread();
+                    SendToClients(Message (Message::START));
+                    std::cout << "Game ready\n";
+                }
             break;
 
             case Message::INPUT:
@@ -65,8 +78,7 @@ void Server::ProcessMessages()
             case Message::FRUIT_EATEN:
                 for(Socket* sock: _clients) //TODO: send to game
                 {
-                     if(!(*sock == *client))
-                        _socket->send(msg, *sock);
+                    _socket->send(msg, *sock);
                 }
                 //std::cout << "Fruit received\n";
             break;
@@ -89,8 +101,46 @@ void Server::ProcessMessages()
     }
 }
 
+//Sends a message to all clients connected to the server
+void Server::SendToClients(Message msg)
+{
+    for(Socket* sock: _clients) //TODO: send to game
+    {
+        _socket->send(msg, *sock);
+    }
+}
+
+void Server::CreateGameThread()
+{
+    pthread_t gameThread; //thread
+    pthread_attr_t attr;
+
+    _game = new ServerGame(this);
+    _game->Init(); //initialize game before
+
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    int res = pthread_create(&gameThread, &attr, RunGame, NULL);
+
+    if(res != 0)
+        std::cout << "Error, Thread was not created\n";
+}
+
+void* Server::RunGame(void*)
+{
+    while (true)
+    {
+        _game->Update();
+    }
+}
+
 Server::~Server()
 {
+    if(_game != nullptr)
+    {
+        delete _game; _game = nullptr;
+    }
+
     delete _socket;
     _socket = nullptr;
-}
+}   

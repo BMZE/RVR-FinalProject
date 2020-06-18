@@ -10,6 +10,10 @@ class Message
 {
 public:
     Message();
+    Message(const uint8_t type);
+    Message(const uint8_t type, const InputInfo &info);
+    Message(const uint8_t type, const FruitInfo &info);
+    
     Message(const InputInfo &info);
     Message(const FruitInfo &info);
     ~Message();

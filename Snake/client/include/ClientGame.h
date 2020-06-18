@@ -1,12 +1,12 @@
-#ifndef _H_Game_H_
-#define _H_Game_H_
+#ifndef _H_ClientGame_H_
+#define _H_ClientGame_H_
 #include <vector>
 #include "InputInfo.h"
 
 //FORWARD DECLARATIONS
-class Player;
 class GameObject;
-class Fruit;
+class ClientPlayer;
+class ClientFruit;
 struct FruitInfo; 
 //struct InputInfo;
 
@@ -16,11 +16,11 @@ struct Tile //info  in tilemap
     GameObject* go = nullptr; //GameObject in tile if not empty
 };
 
-class Game 
+class ClientGame 
 {
 public:
-    Game();
-    ~Game();
+    ClientGame();
+    ~ClientGame();
 
     /**
      * Initializes game (tilemap, players, fruit)
@@ -71,7 +71,7 @@ private:
     
     std::vector<GameObject*> _gameObjects; //Active GameObjects
 
-    Fruit* _fruit = nullptr;
-    Player* _otherPlayer = nullptr;
+    ClientFruit* _fruit = nullptr;
+    ClientPlayer* _otherPlayer = nullptr;
 };
 #endif

@@ -2,7 +2,7 @@
 #include "Platform.h"
 #include "Renderer.h"
 #include "Input.h"
-#include "Game.h"
+#include "ClientGame.h"
 #include <time.h>
 #include <SDL2/SDL.h>
 #include "Client.h"
@@ -27,14 +27,17 @@ int main()
     float rate = 60.0f; //FPS
 	double maxPeriod = 1.0 / rate;
 
-    Game game; 
+    ClientGame game; 
     Client::Init("127.0.0.1", "7777", &game);
+
+    game.Init(); //game is ready 
 
     std::cout << "Waiting for other players\n";
 
+    Client::SendGameReady();
+
     while(!Client::GameStart()); //wait until server is ready
 
-    game.Init(); //initializes game
 
     //game loop
     while(Platform::Input())

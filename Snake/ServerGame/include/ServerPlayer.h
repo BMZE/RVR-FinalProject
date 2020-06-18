@@ -20,7 +20,7 @@ public:
      */
     void Update();
 
-    void Reder(){}; //not used in server
+    void Render(){}; //not used in server
 
     /**
      * @return Type of GameObject (snake)
@@ -76,8 +76,8 @@ public:
     Node* father = nullptr;
     Node* next = nullptr; 
 
-    ServerPlayer::Direction currentDirection = Player::Direction::North;
-    ServerPlayer::Direction lastDirecion = Player::Direction::North;
+    ServerPlayer::Direction currentDirection = ServerPlayer::Direction::North;
+    ServerPlayer::Direction lastDirecion = ServerPlayer::Direction::North;
 
     //update pos from before method
     void UpdatePosition()

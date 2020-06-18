@@ -1,11 +1,11 @@
-#include "Fruit.h"
+#include "ClientFruit.h"
 #include <SDL2/SDL_image.h>
 #include "Renderer.h"
 #include <iostream>
-#include "Game.h"
+#include "ClientGame.h"
 #include "FruitInfo.h"
 
-Fruit::Fruit(int x, int y, int size, const char* path) : _xPos(x), _yPos(y), _size(size)
+ClientFruit::ClientFruit(int x, int y, int size, const char* path) : _xPos(x), _yPos(y), _size(size)
 {
     _type = GameObject::Fruit;   
 
@@ -15,17 +15,17 @@ Fruit::Fruit(int x, int y, int size, const char* path) : _xPos(x), _yPos(y), _si
 
 }
 
-void Fruit::Update(){}
+void ClientFruit::Update(){}
 
 //Renders fruit as tile in tilemap
-void Fruit::Render()
+void ClientFruit::Render()
 {
     SDL_Rect destRect = {_xPos * _size, _yPos * _size, _size, _size};
     SDL_RenderCopy(Renderer::GetRenderer(), _texture, _srcRect, &destRect);
 }
 
 //When fruit is eaten, fruit changes position
-FruitInfo Fruit::Rellocate(Game* g)
+FruitInfo ClientFruit::Rellocate(ClientGame* g)
 {
     while(true)
     {
@@ -44,14 +44,14 @@ FruitInfo Fruit::Rellocate(Game* g)
     }
 }
 
-FruitInfo Fruit::GetPosition()
+FruitInfo ClientFruit::GetPosition()
 {
     FruitInfo info; 
     info.x = _xPos; info.y = _yPos;
     return info; 
 }
 
-void Fruit::SetNewPosition(int x, int y, Game* g)
+void ClientFruit::SetNewPosition(int x, int y, ClientGame* g)
 {
     _xPos = x; _yPos = y; //new fruit position
     Tile tile;
@@ -59,7 +59,7 @@ void Fruit::SetNewPosition(int x, int y, Game* g)
     g->SetTile(x, y, tile);
 }
 
-Fruit::~Fruit()
+ClientFruit::~ClientFruit()
 {
     SDL_DestroyTexture(_texture);
     _texture =  nullptr;

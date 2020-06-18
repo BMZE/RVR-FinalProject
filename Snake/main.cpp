@@ -1,6 +1,6 @@
 #include "Socket.h"
 #include "Message.h"
-#include "include/InputInfo.h"
+#include "InputInfo.h"
 #include <iostream>
 
 int main(int argc, char **argv)

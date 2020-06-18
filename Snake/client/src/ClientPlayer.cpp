@@ -1,13 +1,13 @@
-#include "Player.h"
+#include "ClientPlayer.h"
 #include <SDL2/SDL_image.h>
 #include "Renderer.h"
 #include <iostream>
 #include "Input.h"
 #include "InputInfo.h"
-#include "Game.h"
+#include "ClientGame.h"
 #include "Client.h"
 
-Player::Player(int x, int y, int size, const char* path, bool player, Game* g) 
+ClientPlayer::ClientPlayer(int x, int y, int size, const char* path, bool player, ClientGame* g) 
     : _xPos(x), _yPos(y), _size(size), _player(player)
 {
     int width, height;    
@@ -25,7 +25,7 @@ Player::Player(int x, int y, int size, const char* path, bool player, Game* g)
 }
 
 //Updates snake
-void Player::Update()
+void ClientPlayer::Update()
 {
     Input(); //handle input
 
@@ -38,7 +38,7 @@ void Player::Update()
 }
 
 //Renders snake nodes
-void Player::Render()
+void ClientPlayer::Render()
 {
     for(auto node : _snake)
     {
@@ -48,7 +48,7 @@ void Player::Render()
 }
 
 //Handles input -> snake direction change
-void Player::Input()
+void ClientPlayer::Input()
 {   
     if(_player)
         _inputInfo = Input::GetInputInfo();
@@ -88,13 +88,13 @@ void Player::Input()
     }
 }
 
-void Player::SetInputInfo(InputInfo* info)
+void ClientPlayer::SetInputInfo(InputInfo* info)
 {
     _inputInfo = *info;
 }
 
 //Checks snake's possible collisions
-bool Player::OnCollision()
+bool ClientPlayer::OnCollision()
 {   
     if(_xPos < 0 || _xPos >= _game->GetTilemap().size()
         || _yPos < 0 || _yPos >= _game->GetTilemap()[0].size()) //Out of bounds collision
@@ -128,7 +128,7 @@ bool Player::OnCollision()
 #pragma region SNAKE NODE MANAGEMENT
 
 //Called when snake changes direction, updates nodes current direction
-void Player::DirectionChange()
+void ClientPlayer::DirectionChange()
 {
     _snake.front()->lastDirecion = _snake.front()->currentDirection; //front new direction
     _snake.front()->currentDirection = _direction;
@@ -145,7 +145,7 @@ void Player::DirectionChange()
 }
 
 //Adds node after tail with correct direction to follow
-void Player::AddNode()
+void ClientPlayer::AddNode()
 {
     int x = 0; int y = 0;
     
@@ -185,7 +185,7 @@ void Player::AddNode()
 }
 
 //Set head in new tile position 
-void Player::Move()
+void ClientPlayer::Move()
 {
     switch (_direction)
     {
@@ -207,7 +207,7 @@ void Player::Move()
 }
 
 //Sets all snake nodes in new tile position
-void Player::SetNewPosition()
+void ClientPlayer::SetNewPosition()
 {
      Node* it = _snake.back(); 
      
@@ -237,7 +237,7 @@ void Player::SetNewPosition()
 
 #pragma endregion
 
-Player::~Player()
+ClientPlayer::~ClientPlayer()
 {
     SDL_DestroyTexture(_texture);
     _texture =  nullptr;
@@ -249,7 +249,7 @@ Player::~Player()
 }
 
 //Displays direction for debugging
-void Player::DisplayDir()
+void ClientPlayer::DisplayDir()
 {
     std::string dir = "";
     switch (_direction)

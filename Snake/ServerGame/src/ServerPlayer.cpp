@@ -1,9 +1,8 @@
 #include "ServerPlayer.h"
 #include <iostream>
-#include "Input.h"
+// #include "Input.h"
 #include "InputInfo.h"
 #include "ServerGame.h"
-#include "Client.h"
 
 ServerPlayer::ServerPlayer(int x, int y, ServerGame* g) : _xPos(x), _yPos(y)
 {
@@ -34,7 +33,7 @@ void ServerPlayer::Update()
 void ServerPlayer::Input()
 {   
     //TODO: GRAB NEW INPUT FROM SERVER
-    InputInfo _inputInfo = Input::GetInputInfo();
+    InputInfo _inputInfo;// = Input::GetInputInfo();
     
     bool newDir = false;
 
@@ -68,7 +67,7 @@ void ServerPlayer::Input()
 
 void ServerPlayer::SetInputInfo(InputInfo* info)
 {
-    _inputInfo = *info;
+    //_inputInfo = *info;
 }
 
 //Checks snake's possible collisions
@@ -90,7 +89,7 @@ bool ServerPlayer::OnCollision()
     }
     //if not acting as playing player, but server player, fruit collision should not be handled
     //TODO: not call collisions unles player
-    else if(_player && !_game->GetTilemap()[_xPos][_yPos].empty 
+    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
          && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
     {
         _game->FruitEaten(_xPos, _yPos);
@@ -185,7 +184,7 @@ void ServerPlayer::Move()
 }
 
 //Sets all snake nodes in new tile position
-void Player::SetNewPosition()
+void ServerPlayer::SetNewPosition()
 {
      Node* it = _snake.back(); 
      
@@ -221,7 +220,7 @@ ServerPlayer::~ServerPlayer()
 }
 
 //Displays direction for debugging
-void Player::DisplayDir()
+void ServerPlayer::DisplayDir()
 {
     std::string dir = "";
     switch (_direction)

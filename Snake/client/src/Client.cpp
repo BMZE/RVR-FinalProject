@@ -5,18 +5,18 @@
 #include "FruitInfo.h"
 #include <iostream>
 #include <pthread.h>
-#include "Game.h"
+#include "ClientGame.h"
 
 #pragma region STATIC ATTRIBUTES
 
 Socket* Client::_socket = nullptr;
 volatile bool Client::_startGame = false;
-Game* Client::_game = nullptr;
+ClientGame* Client::_game = nullptr;
 char Client::_id = '0';
 
 #pragma endregion
 
-void Client::Init(const char * s, const char * p, Game* g)
+void Client::Init(const char * s, const char * p, ClientGame* g)
 {
     _socket = new Socket(s, p);
     _game = g;
@@ -58,6 +58,14 @@ void Client::SendInput(InputInfo info)
     msg._type = Message::INPUT;
     _socket->send(msg, *_socket);
 }
+
+void Client::SendGameReady()
+{
+    Message msg(Message::READY);
+    _socket->send(msg, *_socket);
+}
+
+
 
 void Client::SendFruit(FruitInfo info)
 {

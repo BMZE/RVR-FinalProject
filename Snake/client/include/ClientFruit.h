@@ -1,20 +1,20 @@
-#ifndef _H_Fruit_H_
-#define _H_Fruit_H_
+#ifndef _H_ClientFruit_H_
+#define _H_ClientFruit_H_
 
 #include "GameObject.h" 
 
 //FORWARD DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
-class Game;
+class ClientGame;
 class FruitInfo;
 
-class Fruit : public GameObject 
+class ClientFruit : public GameObject 
 {
 public:
 
-    Fruit(int x, int y, int size, const char* path);
-    ~Fruit();
+    ClientFruit(int x, int y, int size, const char* path);
+    ~ClientFruit();
 
     /**
      * Updates GameObject
@@ -34,11 +34,11 @@ public:
     /**
      * When fruit is eaten, fruit changes position
      */
-    FruitInfo Rellocate(Game* g);
+    FruitInfo Rellocate(ClientGame* g);
 
     FruitInfo GetPosition();
 
-    void SetNewPosition(int x, int y, Game* g);
+    void SetNewPosition(int x, int y, ClientGame* g);
     
 private:
 

@@ -4,6 +4,12 @@
 
 Message::Message(){}
 
+Message::Message(const uint8_t type) : _type(type){}
+
+Message::Message(const uint8_t type, const InputInfo &info) : _type(type), _inputInfo(info){}
+
+Message::Message(const uint8_t type, const FruitInfo &info) : _type(type), _fruitInfo(info){}
+
 Message::Message(const InputInfo &info) : _inputInfo(info){}
 
 Message::Message(const FruitInfo &info) : _fruitInfo(info){}

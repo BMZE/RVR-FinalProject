@@ -4,10 +4,12 @@
 #include "ServerFruit.h"
 #include "FruitInfo.h"
 #include "InputInfo.h"
+#include "Server.h"
+#include "Message.h"
 
 #include <iostream>
 
-ServerGame::ServerGame()
+ServerGame::ServerGame(Server* server) : _server(server)
 {
 
 }
@@ -16,12 +18,13 @@ void ServerGame::Init()
 {
     InitTilemap();//Create TileMap
     
-    _gameObjects.reserve(3);
-    
-    InitPlayers();
+    //_gameObjects.reserve(3);
+    _gameObjects.reserve(1);
+
+    //InitPlayers();
     
     //Init fruit 
-    _fruit = new Fruit(20, 5);
+    _fruit = new ServerFruit(20, 5);
     _gameObjects.push_back(_fruit);
     _tilemap[20][5].empty = false;
     _tilemap[20][5].go = _fruit;
@@ -32,6 +35,11 @@ void ServerGame::Init()
 //Updates active GameObjects
 void ServerGame::Update()
 {
+    if(test == 2000)
+    {
+        FruitEaten(20,5);
+    }
+    test++;
     for(auto* go : _gameObjects) //update gameobjects
         go->Update();
 }
@@ -65,6 +73,8 @@ void ServerGame::FruitEaten(int x, int y)
     _tilemap[x][y] = Tile(); //reset tile
 
     FruitInfo info = _fruit->Rellocate(this);
+
+    _server->SendToClients(Message (Message::FRUIT_EATEN, info));
 }
 
 #pragma region TILE MAP

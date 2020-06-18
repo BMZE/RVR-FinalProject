@@ -1,8 +1,9 @@
-#ifndef _H_Game_H_
-#define _H_Game_H_
+#ifndef _H_ServerGame_H_
+#define _H_ServerGame_H_
 #include <vector>
 
 //FORWARD DECLARATIONS
+class Server;
 class GameObject;
 class ServerPlayer;
 class ServerFruit;
@@ -18,7 +19,7 @@ struct Tile //info  in tilemap
 class ServerGame 
 {
 public:
-    ServerGame();
+    ServerGame(Server* server);
     ~ServerGame();
 
     /**
@@ -50,6 +51,8 @@ public:
 
 private: 
 
+    int test = 0;
+    
     void InitTilemap(); //Initializes the tile map
 
     void InitPlayers(); //Creates depending if Player 1 || Player 2 
@@ -59,5 +62,7 @@ private:
     std::vector<GameObject*> _gameObjects; //Active GameObjects
 
     ServerFruit* _fruit = nullptr;
+
+    Server* _server = nullptr;
 };
 #endif
