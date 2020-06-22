@@ -5,6 +5,7 @@
 #include "InputInfo.h"
 #include "FruitInfo.h"
 
+class Node;
 
 class Message
 {
@@ -13,7 +14,9 @@ public:
     Message(const uint8_t type);
     Message(const uint8_t type, const InputInfo &info);
     Message(const uint8_t type, const FruitInfo &info);
-    
+    Message(const uint8_t type, Node* node);
+
+
     Message(const InputInfo &info);
     Message(const FruitInfo &info);
     ~Message();
@@ -34,7 +37,8 @@ public:
      */
     inline int32_t size() { return _size; };
 
-    enum MessageType { LOGIN, INIT, READY, START, INPUT, FRUIT_EATEN, LOGOUT };
+    enum MessageType { LOGIN, INIT, READY, START, INPUT, NODE, ADD_NODE, UPDATE_PLAYER_POSITION,
+        FRUIT_EATEN, LOGOUT };
 
     uint8_t _type;
 
@@ -42,6 +46,7 @@ public:
 
     InputInfo _inputInfo;
     FruitInfo _fruitInfo;
+    Node* _node;
 
 private:
 

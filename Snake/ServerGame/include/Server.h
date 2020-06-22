@@ -6,6 +6,7 @@
 class Socket;
 class ServerGame;
 class Message;
+struct InputInfo;
 
 class Server 
 {
@@ -34,6 +35,7 @@ private:
      */
     static void* RunGame(void*);
 
+
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
@@ -48,6 +50,10 @@ private:
     const int MAX_PLAYERS = 1; //2;
 
     static ServerGame* _game;
+
+    static volatile bool _inputRegistered;
+
+    static InputInfo* _playerOneInput;
 
 };
 #endif

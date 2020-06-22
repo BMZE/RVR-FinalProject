@@ -1,6 +1,7 @@
 #include "Message.h"
 #include <string.h>
 #include <iostream>
+#include "Node.h"
 
 Message::Message(){}
 
@@ -9,6 +10,8 @@ Message::Message(const uint8_t type) : _type(type){}
 Message::Message(const uint8_t type, const InputInfo &info) : _type(type), _inputInfo(info){}
 
 Message::Message(const uint8_t type, const FruitInfo &info) : _type(type), _fruitInfo(info){}
+
+Message::Message(const uint8_t type, Node* node) : _type(type), _node(node){}
 
 Message::Message(const InputInfo &info) : _inputInfo(info){}
 
@@ -51,6 +54,17 @@ void Message::to_bin()
         tmp += sizeof(uint8_t);
         memcpy(tmp, &_player, sizeof(char));
     }
+    else if(_type == Message::NODE)
+    {
+        _size = sizeof(uint8_t) + sizeof(Node);
+        _data = new char[_size];
+
+         char* tmp = _data;
+
+        memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
+        tmp += sizeof(uint8_t);
+        memcpy(tmp, _node->toString().c_str(), sizeof(char) * (sizeof(Node) + 3)); 
+    }
     else //LOGIN OR LOGOUT 
     {
         _data = new char[sizeof(uint8_t)];
@@ -86,6 +100,14 @@ int Message::from_bin(char * data)
     {
         memcpy(&_player, tmp, sizeof(char));
     }
+    else if(_type == Message::NODE)
+    {
+        _node = new Node();
+        char* str = new char[sizeof(char) * (sizeof(Node) + 3)];
+        memcpy(&str[0], tmp, sizeof(char) * (sizeof(Node) + 3));
+        _node->fromString(str);
+        delete[] str; 
+    }
 
     return 0;
 }
@@ -97,4 +119,5 @@ Message::~Message()
          delete[] _data;
          _data = nullptr;
     }
+    //TODO: deletes
 }

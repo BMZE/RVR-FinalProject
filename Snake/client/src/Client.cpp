@@ -90,6 +90,18 @@ void* Client::net_thread(void*)
         {
             RecvFruit(msg._fruitInfo);
         }
+        else if(msg._type == Message::NODE)
+        {
+            _game->UpdatePlayerSnakeHead(msg._node);
+        }
+        else if(msg._type == Message::ADD_NODE)
+        {
+            _game->AddNodeToSnake(msg._node);
+        }
+        else if(msg._type == Message::UPDATE_PLAYER_POSITION)
+        {
+            _game->UpdatePlayerPosition();
+        }
         else if(msg._type == Message::START)
         {
             _id = msg._player;

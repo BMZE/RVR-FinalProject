@@ -9,6 +9,7 @@ class ServerPlayer;
 class ServerFruit;
 struct FruitInfo; 
 struct InputInfo;
+class Message;
 
 struct Tile //info  in tilemap
 {
@@ -47,7 +48,13 @@ public:
      */
     void SetTile(int x, int y, Tile tile);
 
+    /**
+     * Sets the received input of each player
+     * @param info InputInfo of current clients
+     */
     void SetInputInfo(InputInfo* info);
+
+    void SendToClients(Message msg);
 
 private: 
 
@@ -61,8 +68,12 @@ private:
     
     std::vector<GameObject*> _gameObjects; //Active GameObjects
 
+    std::vector<ServerPlayer*> _players;
+
     ServerFruit* _fruit = nullptr;
 
     Server* _server = nullptr;
+
+    
 };
 #endif

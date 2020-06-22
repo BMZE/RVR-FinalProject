@@ -19,9 +19,9 @@ void ServerGame::Init()
     InitTilemap();//Create TileMap
     
     //_gameObjects.reserve(3);
-    _gameObjects.reserve(1);
+    _gameObjects.reserve(2);
 
-    //InitPlayers();
+    InitPlayers();
     
     //Init fruit 
     _fruit = new ServerFruit(20, 5);
@@ -35,11 +35,6 @@ void ServerGame::Init()
 //Updates active GameObjects
 void ServerGame::Update()
 {
-    if(test == 2000)
-    {
-        FruitEaten(20,5);
-    }
-    test++;
     for(auto* go : _gameObjects) //update gameobjects
         go->Update();
 }
@@ -47,24 +42,31 @@ void ServerGame::Update()
 //Creates depending if Player 1 || Player 2
 void ServerGame::InitPlayers()
 {
-    int x = 25; int y = 19;
+    // int x = 25; int y = 19;
     
-    _gameObjects.push_back(new ServerPlayer(x, y, this));
+    int x = 20; int y = 15;
+
+    ServerPlayer* player = new ServerPlayer(x, y, this);
+    _gameObjects.push_back(player);
     
     _tilemap[x][y].empty = false; //player head node
     _tilemap[x][y].go = _gameObjects[0];
 
-    x = 5; y = 19;
-    _gameObjects.push_back(new ServerPlayer(x, y, this));
+    // x = 5; y = 19;
+    // _gameObjects.push_back(new ServerPlayer(x, y, this));
     
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _gameObjects[1];
+    // _tilemap[x][y].empty = false; //player head node
+    // _tilemap[x][y].go = _gameObjects[1];
+
+    _players.reserve(1);
+    _players.push_back(player);
 }
 
 //Sets other player's new input info
 void ServerGame::SetInputInfo(InputInfo* info)
 {
-    //_otherPlayer->SetInputInfo(info);
+    //TODO: for loop
+    _players[0]->SetInputInfo(info);
 } 
 
 //Relocates fruit once eaten, chooses new fruit location
@@ -74,7 +76,12 @@ void ServerGame::FruitEaten(int x, int y)
 
     FruitInfo info = _fruit->Rellocate(this);
 
-    _server->SendToClients(Message (Message::FRUIT_EATEN, info));
+    SendToClients(Message (Message::FRUIT_EATEN, info));
+}
+
+void ServerGame::SendToClients(Message msg)
+{
+    _server->SendToClients(msg);
 }
 
 #pragma region TILE MAP

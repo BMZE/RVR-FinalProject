@@ -4,6 +4,7 @@
 #include <vector>
 #include "GameObject.h"
 #include "InputInfo.h"
+#include "Node.h"
 
 //FORWARDS DECLARATIONS
 class SDL_Texture;
@@ -37,19 +38,22 @@ public:
     /**
      * Adds new node to the snake list with correct direction to follow
      */
-    void AddNode(); 
+    void AddNode(Node* tail); 
 
-    enum Direction {North, East, South, West}; //snake direction
+    void SetHead(Node* head);
+
+    void SetNewPosition(); //Sets all snake nodes in new tile position
+
 
 private:
+
+
 
     void Input(); //Handles input -> snake direction change
 
     void Move(); //Set head in new tile position
 
     void DirectionChange(); //called when snake changes direction, updates nodes current direction
-
-    void SetNewPosition(); //Sets all snake nodes in new tile position
     
     bool OnCollision(); //Checks snake's possible collisions
 
@@ -62,7 +66,7 @@ private:
     SDL_Rect* _srcRect; //texture source rect
     SDL_Texture* _texture; //image texture
 
-    Direction _direction; //head direction
+    Node::Direction _direction; //head direction
 
     std::list<Node*> _snake;
 
@@ -74,37 +78,4 @@ private:
 
     InputInfo _inputInfo;
 };
-
-
-class Node
-{
-public:
-    Node(int xP, int yP) :x(xP), y(yP){};
-    ~Node(){};
-
-    int x; //position
-    int y;
-
-    Node* father = nullptr;
-    Node* next = nullptr; 
-
-    ClientPlayer::Direction currentDirection = ClientPlayer::Direction::North;
-    ClientPlayer::Direction lastDirecion = ClientPlayer::Direction::North;
-
-    //update pos from before method
-    void UpdatePosition()
-    {
-        x = father->x, 
-        y = father->y;
-    };
-
-    //update current direction from father node
-    void UpdateDirections()
-    {
-        lastDirecion = currentDirection;
-        currentDirection = father->lastDirecion;   
-    }
-
-};
-
 #endif

@@ -22,9 +22,9 @@ void ClientGame::Init()
     //create players
     // _gameObjects.reserve(3);
     
-    // InitPlayers();
+    _gameObjects.reserve(2);
     
-    _gameObjects.reserve(1);
+    InitPlayers();
 
     //Init fruit 
     _fruit = new ClientFruit(20, 5, TILE_PIXEL_SIZE, "bin/Assets/apple.bmp");
@@ -36,11 +36,11 @@ void ClientGame::Init()
 //Updates active GameObjects
 void ClientGame::Update()
 {
-    if(!Platform::IsPaused())
-    {
-        for(auto* go : _gameObjects) //update gameobjects
-            go->Update();
-    }
+    // if(!Platform::IsPaused())
+    // {
+    //     for(auto* go : _gameObjects) //update gameobjects
+    //         go->Update();
+    // }
 }
 
 
@@ -54,45 +54,67 @@ void ClientGame::Render()
 //Creates depending if Player 1 || Player 2
 void ClientGame::InitPlayers()
 {
-    if(Client::GetID() == '1') //player 1
-    {
-        int x = 25; int y = 19;
+    int x = 20; int y = 15;
+    _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this);
+    _gameObjects.push_back(_otherPlayer);
     
-        _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
-    
-        _tilemap[x][y].empty = false; //player head node
-        _tilemap[x][y].go = _gameObjects[0];
+    _tilemap[x][y].empty = false; //player head node
+    _tilemap[x][y].go = _gameObjects[0];
 
-        x = 5; y = 19;
-        _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
-        _gameObjects.push_back(_otherPlayer);
+    // if(Client::GetID() == '1') //player 1
+    // {
+    //     int x = 25; int y = 19;
     
-        _tilemap[x][y].empty = false; //player head node
-        _tilemap[x][y].go = _otherPlayer;
-    }
-    else if(Client::GetID() == '2') //player 2
-    {
-        int x = 5; int y = 19;
+    //     _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
     
-        _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
-    
-        _tilemap[x][y].empty = false; //player head node
-        _tilemap[x][y].go = _gameObjects[0];
+    //     _tilemap[x][y].empty = false; //player head node
+    //     _tilemap[x][y].go = _gameObjects[0];
 
-        x = 25; y = 19;
+    //     x = 5; y = 19;
+    //     _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+    //     _gameObjects.push_back(_otherPlayer);
+    
+    //     _tilemap[x][y].empty = false; //player head node
+    //     _tilemap[x][y].go = _otherPlayer;
+    // }
+    // else if(Client::GetID() == '2') //player 2
+    // {
+    //     int x = 5; int y = 19;
+    
+    //     _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
+    
+    //     _tilemap[x][y].empty = false; //player head node
+    //     _tilemap[x][y].go = _gameObjects[0];
 
-        _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
-        _gameObjects.push_back(_otherPlayer);
+    //     x = 25; y = 19;
+
+    //     _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+    //     _gameObjects.push_back(_otherPlayer);
     
-        _tilemap[x][y].empty = false; //player head node
-        _tilemap[x][y].go = _otherPlayer;
-    }
-    else
-    {
-        std::cout << "Error creating players\n";
-    }
+    //     _tilemap[x][y].empty = false; //player head node
+    //     _tilemap[x][y].go = _otherPlayer;
+    // }
+    // else
+    // {
+    //     std::cout << "Error creating players\n";
+    // }
     
     
+}
+
+void ClientGame::UpdatePlayerSnakeHead(Node* node)
+{
+    _otherPlayer->SetHead(node);
+}
+
+void ClientGame::AddNodeToSnake(Node* node)
+{
+    _otherPlayer->AddNode(node);
+}
+
+void ClientGame::UpdatePlayerPosition()
+{
+    _otherPlayer->SetNewPosition();
 }
 
 //Sets other player's new input info
@@ -108,7 +130,6 @@ void ClientGame::FruitRellocated(FruitInfo* info)
 {
     _tilemap[_fruit->GetPosition().x][_fruit->GetPosition().y] = Tile(); //reset old tile
     _fruit->SetNewPosition(info->x, info->y, this);
-   // _otherPlayer->AddNode(); //add node to the other player
 }
 
 //Relocates fruit once eaten, chooses new fruit location

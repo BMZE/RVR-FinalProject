@@ -4,9 +4,9 @@
 #include <vector>
 #include "GameObject.h"
 #include "InputInfo.h"
+#include "Node.h"
 
 //FORWARDS DECLARATIONS
-class Node;
 class ServerGame;
 
 class ServerPlayer : public GameObject
@@ -34,8 +34,6 @@ public:
      */
     void AddNode(); 
 
-    enum Direction {North, East, South, West}; //snake direction
-
 private:
 
     void Input(); //Handles input -> snake direction change
@@ -54,44 +52,14 @@ private:
     int _yPos;
     int _size; //node width & height in pixels
 
-    Direction _direction; //head direction
+    Node::Direction _direction; //head direction
 
     std::list<Node*> _snake;
 
     ServerGame* _game; //reference to game instance
 
     bool _collision = false;
+
+    InputInfo _inputInfo;
 };
-
-
-class Node
-{
-public:
-    Node(int xP, int yP) :x(xP), y(yP){};
-    ~Node(){};
-
-    int x; //position
-    int y;
-
-    Node* father = nullptr;
-    Node* next = nullptr; 
-
-    ServerPlayer::Direction currentDirection = ServerPlayer::Direction::North;
-    ServerPlayer::Direction lastDirecion = ServerPlayer::Direction::North;
-
-    //update pos from before method
-    void UpdatePosition()
-    {
-        x = father->x, 
-        y = father->y;
-    };
-
-    //update current direction from father node
-    void UpdateDirections()
-    {
-        lastDirecion = currentDirection;
-        currentDirection = father->lastDirecion;   
-    }
-};
-
 #endif

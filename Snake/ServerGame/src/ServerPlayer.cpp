@@ -3,10 +3,11 @@
 // #include "Input.h"
 #include "InputInfo.h"
 #include "ServerGame.h"
+#include "Message.h"
 
 ServerPlayer::ServerPlayer(int x, int y, ServerGame* g) : _xPos(x), _yPos(y)
 {
-    _direction = North; //initial direction
+    _direction = Node::North; //initial direction
 
     _snake.push_back(new Node(x, y)); //head node
 
@@ -33,28 +34,27 @@ void ServerPlayer::Update()
 void ServerPlayer::Input()
 {   
     //TODO: GRAB NEW INPUT FROM SERVER
-    InputInfo _inputInfo;// = Input::GetInputInfo();
-    
+
     bool newDir = false;
 
-    if (_inputInfo.right && (_direction == North || _direction == South)) //right
+    if (_inputInfo.right && (_direction == Node::North || _direction == Node::South)) //right
     {
-        _direction = East;
+        _direction = Node::East;
         newDir = true; 
     }
-    else if(_inputInfo.left && (_direction == North || _direction == South)) //left
+    else if(_inputInfo.left && (_direction == Node::North || _direction == Node::South)) //left
     {
-        _direction = West;
+        _direction = Node::West;
         newDir = true; 
     }
-    else if(_inputInfo.forward && (_direction == West || _direction == East)) //up
+    else if(_inputInfo.forward && (_direction == Node::West || _direction == Node::East)) //up
     {
-        _direction = North;
+        _direction = Node::North;
         newDir = true; 
     }
-    else if(_inputInfo.back && (_direction == West || _direction == East)) //down
+    else if(_inputInfo.back && (_direction == Node::West || _direction == Node::East)) //down
     {
-        _direction = South;
+        _direction = Node::South;
         newDir = true; 
     }
 
@@ -67,7 +67,7 @@ void ServerPlayer::Input()
 
 void ServerPlayer::SetInputInfo(InputInfo* info)
 {
-    //_inputInfo = *info;
+    _inputInfo = *info;
 }
 
 //Checks snake's possible collisions
@@ -76,7 +76,7 @@ bool ServerPlayer::OnCollision()
     if(_xPos < 0 || _xPos >= _game->GetTilemap().size()
         || _yPos < 0 || _yPos >= _game->GetTilemap()[0].size()) //Out of bounds collision
     {
-        //printf("OUT OF BOUNDS\n");
+       // printf("OUT OF BOUNDS\n");
         _collision = true; //snake collided
         return true;
     }  
@@ -95,7 +95,7 @@ bool ServerPlayer::OnCollision()
         _game->FruitEaten(_xPos, _yPos);
         AddNode();
 
-       // std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
+       //std::cout << "COLLISION WITH FRUIT\n"; //dows not stop snake
         return false;
     }   
 
@@ -127,19 +127,19 @@ void ServerPlayer::AddNode()
     int x = 0; int y = 0;
     
     //New node position (after tail)
-    if(_snake.back()->lastDirecion == North)
+    if(_snake.back()->lastDirecion == Node::North)
     {
         x = _snake.back()->x; y = _snake.back()->y + 1;
     }
-    else if(_snake.back()->lastDirecion == South)
+    else if(_snake.back()->lastDirecion == Node::South)
     {
         x = _snake.back()->x; y = _snake.back()->y - 1;
     }
-    else if(_snake.back()->lastDirecion == West)
+    else if(_snake.back()->lastDirecion == Node::West)
     {
         x = _snake.back()->x - 1; y = _snake.back()->y;
     }
-    else if(_snake.back()->lastDirecion == East)
+    else if(_snake.back()->lastDirecion == Node::East)
     {
         x = _snake.back()->x + 1; y = _snake.back()->y;
     }
@@ -158,7 +158,7 @@ void ServerPlayer::AddNode()
     
     _game->SetTile(x, y, tile); //set node info on tilemap
     
-   // std::cout << _snake.size() << '\n';
+   _game->SendToClients(Message(Message::ADD_NODE, _snake.back()));
 }
 
 //Set head in new tile position 
@@ -166,21 +166,23 @@ void ServerPlayer::Move()
 {
     switch (_direction)
     {
-        case North:
+        case Node::North:
             _yPos--;
             break;
-        case South:
+        case Node::South:
             _yPos++;
             break;
-        case West:
+        case Node::West:
             _xPos--;
             break;
-        case East:
+        case Node::East:
             _xPos++;
             break;
         default:
             break;
     }   
+
+
 }
 
 //Sets all snake nodes in new tile position
@@ -210,6 +212,8 @@ void ServerPlayer::SetNewPosition()
     tile.empty = false; tile.go = this;
 
     _game->SetTile(_xPos,_yPos, tile); //head new tile
+    _game->SendToClients(Message(Message::NODE, _snake.front()));
+    _game->SendToClients(Message(Message::UPDATE_PLAYER_POSITION));
 }
 
 #pragma endregion
@@ -225,16 +229,16 @@ void ServerPlayer::DisplayDir()
     std::string dir = "";
     switch (_direction)
     {
-        case North:
+        case Node::North:
         dir = "NORTH";
             break;
-        case South:
+        case Node::South:
         dir = "SOUTH";
             break;
-        case West:
+        case Node::West:
         dir = "WEST"; 
             break;
-        case East:
+        case Node::East:
         dir = "EAST"; 
             break;
         default:

@@ -51,7 +51,8 @@ int main()
         //Update
         if (elapsedTime > maxPeriod)
 		{
-            game.Update(); //update objects
+            Client::SendInput(Input::GetInputInfo());
+            //game.Update(); //update objects
             lastFrameTime = currentTime;
         }
 
@@ -59,7 +60,7 @@ int main()
         Renderer::Clear(0); //clears last frame
         game.Render();  //render new frame
         Renderer::Present(); //display the new frame buffer  
-        SDL_Delay(200);      
+        SDL_Delay(125);      
     }
 
     //Release client resources

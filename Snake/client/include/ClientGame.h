@@ -9,6 +9,7 @@ class ClientPlayer;
 class ClientFruit;
 struct FruitInfo; 
 //struct InputInfo;
+class Node;
 
 struct Tile //info  in tilemap
 {
@@ -58,6 +59,12 @@ public:
     void SetTile(int x, int y, Tile tile);
 
     void SetInputInfo(InputInfo* info);
+
+    void UpdatePlayerSnakeHead(Node* node);
+
+    void AddNodeToSnake(Node* node);
+
+    void UpdatePlayerPosition();
 
 private: 
 

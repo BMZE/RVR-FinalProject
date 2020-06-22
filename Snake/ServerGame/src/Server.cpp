@@ -7,9 +7,13 @@
 
 #include "Message.h"
 #include "Socket.h"
+#include "InputInfo.h"
 #include "../ServerGame/include/ServerGame.h"
 
 ServerGame* Server::_game  = nullptr;
+volatile bool Server::_inputRegistered = false;
+InputInfo* Server::_playerOneInput = nullptr;
+
 
 Server::Server(const char * s, const char * p)
 {
@@ -22,6 +26,7 @@ void Server::ProcessMessages()
 {
     std::cout << "Snake server is running\n" << "Waiting for players to join\n";
     int playersReady = 0;
+    int inputRecv = 0;
 
     while(true)
     {
@@ -67,10 +72,13 @@ void Server::ProcessMessages()
             break;
 
             case Message::INPUT:
-                for(Socket* sock: _clients) //TODO: send to game
+                //TODO: set depending on player id 
+                inputRecv++;
+                if(inputRecv == MAX_PLAYERS)
                 {
-                     if(!(*sock == *client))
-                        _socket->send(msg, *sock);
+                    _playerOneInput = new InputInfo(msg._inputInfo);
+                    inputRecv = 0;
+                    _inputRegistered = true;
                 }
                 //std::cout << "Input received\n";
             break;
@@ -130,7 +138,14 @@ void* Server::RunGame(void*)
 {
     while (true)
     {
-        _game->Update();
+        //TODO: WAIT FOR PLAYER INPUT THEN UPDATE
+        if(_inputRegistered)
+        {
+            _inputRegistered = false;
+            _game->SetInputInfo(_playerOneInput);
+            _game->Update();
+            //send new game state to players
+        }
     }
 }
 
@@ -143,4 +158,7 @@ Server::~Server()
 
     delete _socket;
     _socket = nullptr;
+
+    delete _playerOneInput;
+    _playerOneInput = nullptr;
 }   
