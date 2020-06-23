@@ -12,13 +12,16 @@
 
 ServerGame* Server::_game  = nullptr;
 volatile bool Server::_inputRegistered = false;
-InputInfo* Server::_playerOneInput = nullptr;
-
+InputInfo* Server::_playersInput = nullptr;
 
 Server::Server(const char * s, const char * p)
 {
     _socket = new Socket(s, p);
     _socket->Bind();
+
+    _clients.reserve(MAX_PLAYERS);
+    // _playersInput.resize(MAX_PLAYERS);
+    _playersInput = new InputInfo[MAX_PLAYERS];
 }
 
 
@@ -37,58 +40,47 @@ void Server::ProcessMessages()
         switch(msg._type)
         {
             case Message::LOGIN:
-                // if(_clients.size() < MAX_PLAYERS)
-                // {
+                if(_clients.size() < MAX_PLAYERS)
+                {
                     _clients.push_back(client);
                     std::cout << "Player " << _clients.size() << " joined the game\n";
-                    
-                    //TODO:change to INIT -> READY -> START
-                        
-                        /**
-                         * Send init message with player id to clients
-                         * Create thread for game to run on
-                         * once server and all clients ready, START game
-                         */
-                        // for(int i = 0; i < _clients.size(); i++)
-                        // {
-                        //     ms._player = (i + 1) + '0';
-                        //     _socket->send(ms, *_clients[i]);
-                        // }
-                // }
-                // else
-                // {
-                //     std::cout << "Maximum number of players reached\n";
-                // }  
+
+                    if(_clients.size() == MAX_PLAYERS)
+                    {
+                        for(int i = 0; i < _clients.size(); i++) //notify clients and send player id 
+                        {
+                            Message ms(Message::INIT); 
+                            ms._player = i + '0';
+                            _socket->send(ms, *_clients[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    std::cout << "Maximum number of players reached\n";
+                }  
             break;
 
             case Message::READY:
                 playersReady++;
                 if(playersReady == MAX_PLAYERS) //TODO:change to INIT -> READY -> START
                 {
-                    CreateGameThread();
-                    SendToClients(Message (Message::START));
+                    CreateGameThread(); //Thread to run game
+                    SendToClients(Message(Message::START));
                     std::cout << "Game ready\n";
                 }
             break;
 
             case Message::INPUT:
-                //TODO: set depending on player id 
                 inputRecv++;
+                _playersInput[(msg._player-'0')] = InputInfo(msg._inputInfo); 
+                
                 if(inputRecv == MAX_PLAYERS)
                 {
-                    _playerOneInput = new InputInfo(msg._inputInfo);
                     inputRecv = 0;
                     _inputRegistered = true;
                 }
                 //std::cout << "Input received\n";
-            break;
-
-            case Message::FRUIT_EATEN:
-                for(Socket* sock: _clients) //TODO: send to game
-                {
-                    _socket->send(msg, *sock);
-                }
-                //std::cout << "Fruit received\n";
             break;
 
             case Message::LOGOUT:
@@ -138,15 +130,14 @@ void* Server::RunGame(void*)
 {
     while (true)
     {
-        //TODO: WAIT FOR PLAYER INPUT THEN UPDATE
         if(_inputRegistered)
         {
             _inputRegistered = false;
-            _game->SetInputInfo(_playerOneInput);
+            _game->SetInputInfo(_playersInput);
             _game->Update();
-            //send new game state to players
         }
     }
+
 }
 
 Server::~Server()
@@ -159,6 +150,5 @@ Server::~Server()
     delete _socket;
     _socket = nullptr;
 
-    delete _playerOneInput;
-    _playerOneInput = nullptr;
+    //Todo: delete players input 
 }   

@@ -12,7 +12,7 @@ class ServerGame;
 class ServerPlayer : public GameObject
 {
 public:
-    ServerPlayer(int x, int y, ServerGame* g);
+    ServerPlayer(int x, int y, ServerGame* g, int playerID);
     ~ServerPlayer();
 
     /**
@@ -48,15 +48,16 @@ private:
 
     void DisplayDir(); //debug method for current snake direction
     
-    int _xPos; //head node x & y position
-    int _yPos;
-    int _size; //node width & height in pixels
+    int _xPos = 0; //head node x & y position
+    int _yPos = 0;
+
+    int _playerID = 0; //Player 1 or Player 2
 
     Node::Direction _direction; //head direction
 
     std::list<Node*> _snake;
 
-    ServerGame* _game; //reference to game instance
+    ServerGame* _game = nullptr; //reference to game instance
 
     bool _collision = false;
 

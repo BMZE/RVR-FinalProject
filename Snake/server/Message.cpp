@@ -5,18 +5,16 @@
 
 Message::Message(){}
 
-Message::Message(const uint8_t type) : _type(type){}
+Message::Message(const uint8_t type) : _type(type){} //LOGIN, LOGOUT, START
 
-Message::Message(const uint8_t type, const InputInfo &info) : _type(type), _inputInfo(info){}
+Message::Message(const uint8_t type, const InputInfo &info, char player)  //INPUT
+    : _type(type), _inputInfo(info), _player(player){}
 
-Message::Message(const uint8_t type, const FruitInfo &info) : _type(type), _fruitInfo(info){}
+Message::Message(const uint8_t type, const FruitInfo &info) //FRUIT_EATEN
+    : _type(type), _fruitInfo(info){}
 
-Message::Message(const uint8_t type, Node* node) : _type(type), _node(node){}
-
-Message::Message(const InputInfo &info) : _inputInfo(info){}
-
-Message::Message(const FruitInfo &info) : _fruitInfo(info){}
-
+Message::Message(const uint8_t type, Node* node, char player) //NODE, ADD_NODE
+    : _type(type), _node(node), _player(player){}
 
 void Message::to_bin()
 {
@@ -28,6 +26,9 @@ void Message::to_bin()
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
         tmp += sizeof(uint8_t);
+
+        memcpy((void*)tmp, &_player, sizeof(char));
+        tmp += sizeof(char);
 
         memcpy((void*)tmp, _inputInfo.toString().c_str(), sizeof(char) * (sizeof(InputInfo) + 1)); 
     }
@@ -43,7 +44,7 @@ void Message::to_bin()
 
         memcpy((void*)tmp, _fruitInfo.toString().c_str(), sizeof(char) * (sizeof(FruitInfo) + 2)); 
     }
-    else if(_type == Message::START) //package start info
+    else if(_type == Message::INIT) //package start info
     {
         _size = sizeof(uint8_t) + sizeof(char);
         _data = new char[_size];
@@ -56,16 +57,18 @@ void Message::to_bin()
     }
     else if(_type == Message::NODE)
     {
-        _size = sizeof(uint8_t) + sizeof(Node);
+        _size = sizeof(uint8_t) + sizeof(char) * (sizeof(Node) + 4);
         _data = new char[_size];
 
          char* tmp = _data;
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
         tmp += sizeof(uint8_t);
+        memcpy(tmp, &_player, sizeof(char));
+        tmp += sizeof(char);
         memcpy(tmp, _node->toString().c_str(), sizeof(char) * (sizeof(Node) + 3)); 
     }
-    else //LOGIN OR LOGOUT 
+    else //LOGIN OR LOGOUT OR START
     {
         _data = new char[sizeof(uint8_t)];
         _size = sizeof(uint8_t);
@@ -83,6 +86,9 @@ int Message::from_bin(char * data)
 
     if(_type == INPUT) //save inputinfo
     {
+         memcpy(&_player,  tmp, sizeof(char));
+        tmp += sizeof(char);
+        
         char* str = new char[sizeof(char) * (sizeof(InputInfo) + 1)];
         memcpy(&str[0], tmp, sizeof(char) * (sizeof(InputInfo) + 1));
 
@@ -96,12 +102,15 @@ int Message::from_bin(char * data)
         _fruitInfo.fromString(str);
         delete[] str; 
     }
-    else if(_type == Message::START) //save start info
+    else if(_type == Message::INIT) //save init info
     {
         memcpy(&_player, tmp, sizeof(char));
     }
     else if(_type == Message::NODE)
     {
+        memcpy(&_player,  tmp, sizeof(char));
+        tmp += sizeof(char);
+
         _node = new Node();
         char* str = new char[sizeof(char) * (sizeof(Node) + 3)];
         memcpy(&str[0], tmp, sizeof(char) * (sizeof(Node) + 3));

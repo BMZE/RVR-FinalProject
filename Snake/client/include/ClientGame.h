@@ -60,11 +60,11 @@ public:
 
     void SetInputInfo(InputInfo* info);
 
-    void UpdatePlayerSnakeHead(Node* node);
+    void UpdatePlayerSnakeHead(Node* node, int player);
 
-    void AddNodeToSnake(Node* node);
+    void AddNodeToSnake(Node* node, int player);
 
-    void UpdatePlayerPosition();
+    void UpdatePlayerPosition(int player);
 
 private: 
 
@@ -78,7 +78,8 @@ private:
     
     std::vector<GameObject*> _gameObjects; //Active GameObjects
 
+    std::vector<ClientPlayer*> _players;
+
     ClientFruit* _fruit = nullptr;
-    ClientPlayer* _otherPlayer = nullptr;
 };
 #endif

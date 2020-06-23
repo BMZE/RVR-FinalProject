@@ -47,13 +47,12 @@ private:
      */
     Socket* _socket = nullptr;
 
-    const int MAX_PLAYERS = 1; //2;
+    const int MAX_PLAYERS = 2;
 
     static ServerGame* _game;
 
     static volatile bool _inputRegistered;
 
-    static InputInfo* _playerOneInput;
-
+    static InputInfo* _playersInput;
 };
 #endif

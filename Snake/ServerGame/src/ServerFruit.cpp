@@ -26,7 +26,6 @@ FruitInfo ServerFruit::Rellocate(ServerGame* g)
         if((x != _position.x && y != _position.y) && g->GetTilemap()[x][y].empty) 
         {
             SetNewPosition(x, y, g);      
-            //SEND NEW FRUIT POS
             return _position;
         }
     }

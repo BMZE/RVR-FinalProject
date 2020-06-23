@@ -12,13 +12,10 @@ class Message
 public:
     Message();
     Message(const uint8_t type);
-    Message(const uint8_t type, const InputInfo &info);
+    Message(const uint8_t type, const InputInfo &info, char player);
     Message(const uint8_t type, const FruitInfo &info);
-    Message(const uint8_t type, Node* node);
+    Message(const uint8_t type, Node* node, char player);
 
-
-    Message(const InputInfo &info);
-    Message(const FruitInfo &info);
     ~Message();
 
     void to_bin();
@@ -50,7 +47,7 @@ public:
 
 private:
 
-    static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t) + sizeof(char);
+    static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t) + sizeof(char) * 2;
     static const size_t FRUIT_SIZE = sizeof(FruitInfo) + sizeof(uint8_t) + (sizeof(char) * 2);
 
     int32_t _size = 0;

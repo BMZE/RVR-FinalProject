@@ -11,6 +11,7 @@
 
 Socket* Client::_socket = nullptr;
 volatile bool Client::_startGame = false;
+volatile bool Client::_initGame = false;
 ClientGame* Client::_game = nullptr;
 char Client::_id = '0';
 
@@ -54,23 +55,13 @@ void Client::Logout()
 //If direction has changed, sends new input to server
 void Client::SendInput(InputInfo info)
 {
-    Message msg(info);
-    msg._type = Message::INPUT;
+    Message msg(Message::INPUT, info, _id);
     _socket->send(msg, *_socket);
 }
 
 void Client::SendGameReady()
 {
     Message msg(Message::READY);
-    _socket->send(msg, *_socket);
-}
-
-
-
-void Client::SendFruit(FruitInfo info)
-{
-    Message msg(info);
-    msg._type = Message::FRUIT_EATEN;
     _socket->send(msg, *_socket);
 }
 
@@ -82,43 +73,29 @@ void* Client::net_thread(void*)
         Message msg;
         _socket->recv(msg, server);
 
-        if(msg._type == Message::INPUT)
+        if (msg._type == Message::FRUIT_EATEN)
         {
-            RecvInput(msg._inputInfo);
-        }    
-        else if (msg._type == Message::FRUIT_EATEN)
-        {
-            RecvFruit(msg._fruitInfo);
+           _game->FruitRellocated(&msg._fruitInfo);
         }
         else if(msg._type == Message::NODE)
         {
-            _game->UpdatePlayerSnakeHead(msg._node);
+            _game->UpdatePlayerSnakeHead(msg._node, (msg._player - '0'));
         }
         else if(msg._type == Message::ADD_NODE)
         {
-            _game->AddNodeToSnake(msg._node);
+            _game->AddNodeToSnake(msg._node,(msg._player - '0'));
         }
-        else if(msg._type == Message::UPDATE_PLAYER_POSITION)
+        else if(msg._type == Message::INIT)
         {
-            _game->UpdatePlayerPosition();
+            _id = msg._player;
+            _initGame = true;
         }
         else if(msg._type == Message::START)
         {
-            _id = msg._player;
             _startGame = true;
         }
     }
     
-}
-
-void Client::RecvInput(InputInfo  info)
-{
-    _game->SetInputInfo(&info);
-}
-
-void Client::RecvFruit(FruitInfo info)
-{
-    _game->FruitRellocated(&info);
 }
 
 void Client::Release()

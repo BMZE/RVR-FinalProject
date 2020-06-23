@@ -30,14 +30,17 @@ int main()
     ClientGame game; 
     Client::Init("127.0.0.1", "7777", &game);
 
-    game.Init(); //game is ready 
+    while(!Client::InitGame());
+
+    game.Init(); //initialize GameObjects
 
     std::cout << "Waiting for other players\n";
 
-    Client::SendGameReady();
+    Client::SendGameReady(); //game is ready 
 
-    while(!Client::GameStart()); //wait until server is ready
+    while(!Client::StartGame()); //wait until server is ready
 
+    std::cout << "Start game\n";
 
     //game loop
     while(Platform::Input())

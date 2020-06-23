@@ -17,12 +17,8 @@ ClientGame::ClientGame()
 void ClientGame::Init()
 {
     InitTilemap();//Create TileMap
-
-    //TODO: final 
-    //create players
-    // _gameObjects.reserve(3);
     
-    _gameObjects.reserve(2);
+    _gameObjects.reserve(3);
     
     InitPlayers();
 
@@ -54,73 +50,64 @@ void ClientGame::Render()
 //Creates depending if Player 1 || Player 2
 void ClientGame::InitPlayers()
 {
-    int x = 20; int y = 15;
-    _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this);
-    _gameObjects.push_back(_otherPlayer);
-    
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _gameObjects[0];
+    _players.reserve(2);
 
-    // if(Client::GetID() == '1') //player 1
-    // {
-    //     int x = 25; int y = 19;
+    if(Client::GetID() == '0') //player 1
+    {
+        int x = 25; int y = 19;
     
-    //     _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
-    
-    //     _tilemap[x][y].empty = false; //player head node
-    //     _tilemap[x][y].go = _gameObjects[0];
+        ClientPlayer* player = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this);
+        _gameObjects.push_back(player);
+        _players.push_back(player);
 
-    //     x = 5; y = 19;
-    //     _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
-    //     _gameObjects.push_back(_otherPlayer);
-    
-    //     _tilemap[x][y].empty = false; //player head node
-    //     _tilemap[x][y].go = _otherPlayer;
-    // }
-    // else if(Client::GetID() == '2') //player 2
-    // {
-    //     int x = 5; int y = 19;
-    
-    //     _gameObjects.push_back(new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", true, this));
-    
-    //     _tilemap[x][y].empty = false; //player head node
-    //     _tilemap[x][y].go = _gameObjects[0];
+        x = 5; y = 19;
 
-    //     x = 25; y = 19;
-
-    //     _otherPlayer = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
-    //     _gameObjects.push_back(_otherPlayer);
+        player = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", false, this);
+        _gameObjects.push_back(player);
+        _players.push_back(player);
+    }
+    else if(Client::GetID() == '1') //player 2
+    {
+        int x = 25; int y = 19;
     
-    //     _tilemap[x][y].empty = false; //player head node
-    //     _tilemap[x][y].go = _otherPlayer;
-    // }
-    // else
-    // {
-    //     std::cout << "Error creating players\n";
-    // }
+        ClientPlayer* player = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Blue.bmp", true, this);
+        _gameObjects.push_back(player);
+        _players.push_back(player);
+
+        x = 5; y = 19;
+
+        player = new ClientPlayer(x, y, TILE_PIXEL_SIZE, "bin/Assets/Red.bmp", false, this);
+        _gameObjects.push_back(player);
+        _players.push_back(player);
+
+    }
+    else
+    {
+        std::cout << "Error creating players\n";
+    }
     
     
 }
 
-void ClientGame::UpdatePlayerSnakeHead(Node* node)
+void ClientGame::UpdatePlayerSnakeHead(Node* node, int player)
 {
-    _otherPlayer->SetHead(node);
+    _players[player]->SetHead(node);
 }
 
-void ClientGame::AddNodeToSnake(Node* node)
+void ClientGame::AddNodeToSnake(Node* node, int player)
 {
-    _otherPlayer->AddNode(node);
+    _players[player]->AddNode(node);
 }
 
-void ClientGame::UpdatePlayerPosition()
+void ClientGame::UpdatePlayerPosition(int player)
 {
-    _otherPlayer->SetNewPosition();
+    _players[player]->SetNewPosition();
 }
 
 //Sets other player's new input info
 void ClientGame::SetInputInfo(InputInfo* info)
 {
-    _otherPlayer->SetInputInfo(info);
+    _players[0]->SetInputInfo(info);
 } 
 
 #pragma region FRUIT RELOCATION
@@ -138,7 +125,6 @@ void ClientGame::FruitEaten(int x, int y)
     _tilemap[x][y] = Tile(); //reset tile
 
     FruitInfo info = _fruit->Rellocate(this);
-    Client::SendFruit(info);
 }
 
 #pragma endregion

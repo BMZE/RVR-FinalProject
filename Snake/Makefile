@@ -18,22 +18,18 @@ INClUDE_SERVER := ServerGame/include
 CLIENT_GAME 	:= client
 COMMON 		:= Common
 
-all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE) $(BIN)/$(CLIENT_EXE)
+all: $(BIN)/$(EXECUTABLE) $(BIN)/$(SERVER_EXE)
 
 run: clean all
 	clear
 	./$(BIN)/$(EXECUTABLE)
 	./$(BIN)/$(SERVER_EXE)
-	./$(BIN)/$(CLIENT_EXE)
 
 $(BIN)/$(EXECUTABLE): $(CLIENT_GAME)/src/*.cpp $(SERVER)/*.cpp  
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_CLIENT) -I$(COMMON) -L$(LIB) $^ -o $@ $(LIBRARIES)
 
 $(BIN)/$(SERVER_EXE): ServerMain.cpp $(SERVER_GAME)/*.cpp $(SERVER)/*.cpp 
 	$(CXX) $(CXX_FLAGS) -I$(SERVER) -I$(COMMON) -I$(INClUDE_SERVER) -L$(LIB)  $^ -o $@ $(LIBRARIES)
-
-$(BIN)/$(CLIENT_EXE): main.cpp $(SERVER)/*.cpp  
-	$(CXX) $(CXX_FLAGS) -I$(SERVER) -I$(COMMON) -L$(LIB)  $^ -o $@ $(LIBRARIES)
 
 clean:
 	-rm $(BIN)/*

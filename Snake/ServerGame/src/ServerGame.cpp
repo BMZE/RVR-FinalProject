@@ -19,7 +19,7 @@ void ServerGame::Init()
     InitTilemap();//Create TileMap
     
     //_gameObjects.reserve(3);
-    _gameObjects.reserve(2);
+    _gameObjects.reserve(3);
 
     InitPlayers();
     
@@ -42,31 +42,31 @@ void ServerGame::Update()
 //Creates depending if Player 1 || Player 2
 void ServerGame::InitPlayers()
 {
-    // int x = 25; int y = 19;
-    
-    int x = 20; int y = 15;
+    _players.reserve(2);
 
-    ServerPlayer* player = new ServerPlayer(x, y, this);
-    _gameObjects.push_back(player);
+    int x = 25; int y = 19;
     
+    ServerPlayer* player = new ServerPlayer(x, y, this, 0);
+    _gameObjects.push_back(player);
+    _players.push_back(player);
+
     _tilemap[x][y].empty = false; //player head node
     _tilemap[x][y].go = _gameObjects[0];
 
-    // x = 5; y = 19;
-    // _gameObjects.push_back(new ServerPlayer(x, y, this));
-    
-    // _tilemap[x][y].empty = false; //player head node
-    // _tilemap[x][y].go = _gameObjects[1];
-
-    _players.reserve(1);
+    x = 5; y = 19;
+    player = new ServerPlayer(x, y, this, 1);
+    _gameObjects.push_back(player);
     _players.push_back(player);
+
+    _tilemap[x][y].empty = false; //player head node
+    _tilemap[x][y].go = _gameObjects[1];
 }
 
 //Sets other player's new input info
 void ServerGame::SetInputInfo(InputInfo* info)
 {
-    //TODO: for loop
-    _players[0]->SetInputInfo(info);
+    for(int i = 0; i < _players.size(); i++)
+        _players[i]->SetInputInfo(&info[i]);
 } 
 
 //Relocates fruit once eaten, chooses new fruit location

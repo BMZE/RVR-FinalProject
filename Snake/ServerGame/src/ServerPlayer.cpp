@@ -5,7 +5,8 @@
 #include "ServerGame.h"
 #include "Message.h"
 
-ServerPlayer::ServerPlayer(int x, int y, ServerGame* g) : _xPos(x), _yPos(y)
+ServerPlayer::ServerPlayer(int x, int y, ServerGame* g, int playerID) 
+    : _xPos(x), _yPos(y), _playerID(playerID)
 {
     _direction = Node::North; //initial direction
 
@@ -14,7 +15,6 @@ ServerPlayer::ServerPlayer(int x, int y, ServerGame* g) : _xPos(x), _yPos(y)
     _type = GameObject::Snake; 
     
     _game = g; //ServerGame reference
-
 }
 
 //Updates snake
@@ -33,8 +33,6 @@ void ServerPlayer::Update()
 //Handles input -> snake direction change
 void ServerPlayer::Input()
 {   
-    //TODO: GRAB NEW INPUT FROM SERVER
-
     bool newDir = false;
 
     if (_inputInfo.right && (_direction == Node::North || _direction == Node::South)) //right
@@ -87,8 +85,6 @@ bool ServerPlayer::OnCollision()
         _collision = true; //snake collided
         return true;
     }
-    //if not acting as playing player, but server player, fruit collision should not be handled
-    //TODO: not call collisions unles player
     else if(!_game->GetTilemap()[_xPos][_yPos].empty 
          && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
     {
@@ -158,7 +154,7 @@ void ServerPlayer::AddNode()
     
     _game->SetTile(x, y, tile); //set node info on tilemap
     
-   _game->SendToClients(Message(Message::ADD_NODE, _snake.back()));
+   _game->SendToClients(Message(Message::ADD_NODE, _snake.back(), (_playerID + '0')));
 }
 
 //Set head in new tile position 
@@ -212,8 +208,7 @@ void ServerPlayer::SetNewPosition()
     tile.empty = false; tile.go = this;
 
     _game->SetTile(_xPos,_yPos, tile); //head new tile
-    _game->SendToClients(Message(Message::NODE, _snake.front()));
-    _game->SendToClients(Message(Message::UPDATE_PLAYER_POSITION));
+    _game->SendToClients(Message(Message::NODE, _snake.front(), (_playerID + '0')));
 }
 
 #pragma endregion

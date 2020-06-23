@@ -28,6 +28,7 @@ public:
 
     /**
      * When fruit is eaten, fruit changes position
+     * @return new fruit position 
      */
     FruitInfo Rellocate(ServerGame* g);
 

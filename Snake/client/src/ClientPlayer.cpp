@@ -8,7 +8,7 @@
 #include "Client.h"
 
 ClientPlayer::ClientPlayer(int x, int y, int size, const char* path, bool player, ClientGame* g) 
-    : _xPos(x), _yPos(y), _size(size), _player(player)
+    : _xPos(x), _yPos(y), _size(size)
 {
     int width, height;    
     _texture = Renderer::LoadImage(path, &width, &height); //load texture
@@ -112,7 +112,7 @@ bool ClientPlayer::OnCollision()
     }
     //if not acting as playing player, but server player, fruit collision should not be handled
     //TODO: not call collisions unles player
-    else if(_player && !_game->GetTilemap()[_xPos][_yPos].empty 
+    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
          && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
     {
         _game->FruitEaten(_xPos, _yPos);
@@ -134,6 +134,8 @@ void ClientPlayer::SetHead(Node* head)
 
     _snake.front()->lastDirecion = head->lastDirecion; //front new direction
     _snake.front()->currentDirection = head->currentDirection;
+
+    SetNewPosition(); //update position of full snake
 }
 
 //Called when snake changes direction, updates nodes current direction

@@ -74,7 +74,6 @@ private:
 
     bool _collision = false;
 
-    bool _player = false; //true if it's the player, false if other player
 
     InputInfo _inputInfo;
 };

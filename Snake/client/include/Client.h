@@ -37,24 +37,16 @@ public:
      */
     static void SendGameReady();
 
+    static inline bool StartGame(){ return _startGame; };
 
-    /**
-     * If the other player's direction has changed, 
-     * receive new input information from server
-     */
-    static void RecvInput(InputInfo info); 
-
-    static void SendFruit(FruitInfo info);
-
-    static void RecvFruit(FruitInfo info);
-
-    static inline bool GameStart(){ return _startGame; };
+    static inline bool InitGame(){ return _initGame; };
 
     static inline char GetID() { return _id; };
 
 private:
     static Socket* _socket;
     static volatile bool _startGame;
+    static volatile bool _initGame; 
 
     static ClientGame* _game;
     static char _id;
