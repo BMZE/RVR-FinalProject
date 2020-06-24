@@ -20,10 +20,10 @@ ServerPlayer::ServerPlayer(int x, int y, ServerGame* g, int playerID)
 //Updates snake
 void ServerPlayer::Update()
 {
-    Input(); //handle input
-
     if(!_collision) //collision impends snake movement
     {
+        Input(); //handle input
+
         Move(); //next snake pos
         if(!OnCollision()) //if next tile is available for movement
             SetNewPosition(); //set snake to next tile
@@ -63,6 +63,7 @@ void ServerPlayer::Input()
     }
 }
 
+//Sets new player input
 void ServerPlayer::SetInputInfo(InputInfo* info)
 {
     _inputInfo = *info;
@@ -78,15 +79,15 @@ bool ServerPlayer::OnCollision()
         _collision = true; //snake collided
         return true;
     }  
-    else if(!_game->GetTilemap()[_xPos][_yPos].empty
-        && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Snake) //collision with snake
+    else if(_game->GetTilemap()[_xPos][_yPos] != nullptr
+        && _game->GetTilemap()[_xPos][_yPos]->GetType() == GameObject::Snake) //collision with snake
     {
         //std::cout << "COLLISION WITH SNAKE\n"; //stops snake
         _collision = true; //snake collided
         return true;
     }
-    else if(!_game->GetTilemap()[_xPos][_yPos].empty 
-         && _game->GetTilemap()[_xPos][_yPos].go->GetType() == GameObject::Fruit) //collision with fruit
+    else if(_game->GetTilemap()[_xPos][_yPos] != nullptr 
+         && _game->GetTilemap()[_xPos][_yPos]->GetType() == GameObject::Fruit) //collision with fruit
     {
         _game->FruitEaten(_xPos, _yPos);
         AddNode();
@@ -143,16 +144,13 @@ void ServerPlayer::AddNode()
     Node* node = new Node(x, y);
 
     //set father & next nodes 
-    _snake.back()->next = node; //TODO: SNAKE.BACK()
+    _snake.back()->next = node;
     node->father = _snake.back();
     node->UpdateDirections();
     _snake.push_back(node);
 
     //Snake tile
-    Tile tile;
-    tile.empty = false; tile.go = this;
-    
-    _game->SetTile(x, y, tile); //set node info on tilemap
+    _game->SetTile(x, y, this); //set node info on tilemap
     
    _game->SendToClients(Message(Message::ADD_NODE, _snake.back(), (_playerID + '0')));
 }
@@ -177,8 +175,6 @@ void ServerPlayer::Move()
         default:
             break;
     }   
-
-
 }
 
 //Sets all snake nodes in new tile position
@@ -186,14 +182,12 @@ void ServerPlayer::SetNewPosition()
 {
      Node* it = _snake.back(); 
      
-     _game->SetTile(it->x, it->y, Tile()); //reset old tail info on tilemap 
+     _game->SetTile(it->x, it->y, nullptr); //reset old tail info on tilemap 
 
     if(_snake.size() > 1) //snake has more than one node
     {   
         while(it->father != nullptr) //Update nodes
         {
-            // it->x = it->father->x;
-            // it->y = it->father->y;
             it->UpdatePosition();
             it = it->father;
         }
@@ -204,10 +198,7 @@ void ServerPlayer::SetNewPosition()
     _snake.front()->y = _yPos;
 
     //Snake tile
-    Tile tile;
-    tile.empty = false; tile.go = this;
-
-    _game->SetTile(_xPos,_yPos, tile); //head new tile
+    _game->SetTile(_xPos,_yPos, this); //head new tile
     _game->SendToClients(Message(Message::NODE, _snake.front(), (_playerID + '0')));
 }
 
@@ -215,7 +206,12 @@ void ServerPlayer::SetNewPosition()
 
 ServerPlayer::~ServerPlayer()
 {
-    //TODO: FREE NODE LIST 
+    //delete allocated memory in node list 
+    for(std::list<Node*>::const_iterator it = _snake.begin(); it != _snake.end(); it++)
+    {
+        delete *it;
+    } 
+    _snake.clear();
 }
 
 //Displays direction for debugging

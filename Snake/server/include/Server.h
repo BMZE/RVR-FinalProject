@@ -11,9 +11,17 @@ struct InputInfo;
 class Server 
 {
 public:
+    /**
+     * @param s ip to connect to
+     * @param p port to connect to
+     */
     Server(const char * s, const char * p);
+
     ~Server();
 
+    /**
+     * Launched on main thread, receives and processes messages from clients
+     */
     void ProcessMessages();
 
     /**
@@ -26,7 +34,7 @@ private:
 
     /**
      * Creates and sets the thread that runs the game on the server
-     * While main thread takes care of receiving and sending ¿? messages
+     * While main thread takes care of receiving messages
      */
     void CreateGameThread();
 
@@ -51,8 +59,8 @@ private:
 
     static ServerGame* _game;
 
-    static volatile bool _inputRegistered;
+    static volatile bool _inputRegistered; //set to true when al player input is collected for update
 
-    static InputInfo* _playersInput;
+    static InputInfo* _playersInput; //collects all player input
 };
 #endif

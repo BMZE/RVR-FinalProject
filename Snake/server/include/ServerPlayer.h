@@ -27,6 +27,10 @@ public:
      */
     inline Type GetType(){ return _type; };
 
+    /**
+     * Sets new player input
+     * @param info new input info collected by server
+     */
     void SetInputInfo(InputInfo* info);
 
     /**

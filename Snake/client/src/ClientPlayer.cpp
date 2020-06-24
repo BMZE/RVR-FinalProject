@@ -73,5 +73,10 @@ ClientPlayer::~ClientPlayer()
     delete _srcRect;
     _srcRect = nullptr;
 
-    //TODO: FREE NODE LIST 
+   //delete allocated memory in node list 
+    for(std::list<Node*>::const_iterator it = _snake.begin(); it != _snake.end(); it++)
+    {
+        delete *it;
+    } 
+    _snake.clear();
 }

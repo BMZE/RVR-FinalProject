@@ -44,7 +44,7 @@ void Message::to_bin()
 
         memcpy((void*)tmp, _fruitInfo.toString().c_str(), sizeof(char) * (sizeof(FruitInfo) + 2)); 
     }
-    else if(_type == Message::INIT) //package start info
+    else if(_type == Message::INIT || _type == Message::LOGOUT) //package init/logout info
     {
         _size = sizeof(uint8_t) + sizeof(char);
         _data = new char[_size];
@@ -68,7 +68,7 @@ void Message::to_bin()
         tmp += sizeof(char);
         memcpy(tmp, _node->toString().c_str(), sizeof(char) * (sizeof(Node) + 3)); 
     }
-    else //LOGIN OR LOGOUT OR START
+    else //LOGIN OR START
     {
         _data = new char[sizeof(uint8_t)];
         _size = sizeof(uint8_t);
@@ -79,7 +79,7 @@ void Message::to_bin()
 
 int Message::from_bin(char * data)
 {   
-    //if type = LOGIN | LOGOUT only _type is read
+    //if type = LOGIN | START only _type is read
     char* tmp = data;
     memcpy(&_type, tmp, sizeof(uint8_t)); //read type of message from data
     tmp += sizeof(uint8_t); 
@@ -102,7 +102,7 @@ int Message::from_bin(char * data)
         _fruitInfo.fromString(str);
         delete[] str; 
     }
-    else if(_type == Message::INIT) //save init info
+    else if(_type == Message::INIT || _type == Message::LOGOUT) //save init/logout info
     {
         memcpy(&_player, tmp, sizeof(char));
     }

@@ -50,6 +50,7 @@ void Client::Login()
 void Client::Logout()
 {
     Message msg(Message::LOGOUT);
+    msg._player = _id;
     _socket->send(msg, *_socket);  
 }
 

@@ -91,6 +91,11 @@ void ClientGame::FruitRellocated(FruitInfo* info)
 
 ClientGame::~ClientGame()
 {
-   //TODO: release players
-   //TODO: releas fruit
+   //delete GameObjects allocated memory
+    for (auto go : _gameObjects)
+        delete go;
+
+    _gameObjects.clear();
+    _players.clear();
+    _fruit = nullptr;
 }

@@ -22,21 +22,27 @@ public:
     void Render(); //not used in server
 
     /**
-     * @return Type of GameObject (snake/fruit/...)
+     * @return Type of GameObject (fruit)
      */
     inline Type GetType(){ return _type; };
 
     /**
      * When fruit is eaten, fruit changes position
+     * @param g game reference for accessing tilemap
      * @return new fruit position 
      */
     FruitInfo Rellocate(ServerGame* g);
 
-    /**
-     * Returns fruit position
-     */
-    FruitInfo GetPosition();
+    // /**
+    //  * Returns fruit position
+    //  */
+    // FruitInfo GetPosition();
 
+    /**
+     * @param x new X coordinate
+     * @param y new Y coordinate
+     * @param g game reference for accessing tilemap
+     */
     void SetNewPosition(int x, int y, ServerGame* g);
     
 private:

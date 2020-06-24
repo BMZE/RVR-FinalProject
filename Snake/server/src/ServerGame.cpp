@@ -14,11 +14,11 @@ ServerGame::ServerGame(Server* server) : _server(server)
 
 }
 
+//Initializes game (tilemap, players, fruit)
 void ServerGame::Init()
 {
     InitTilemap();//Create TileMap
     
-    //_gameObjects.reserve(3);
     _gameObjects.reserve(3);
 
     InitPlayers();
@@ -26,16 +26,13 @@ void ServerGame::Init()
     //Init fruit 
     _fruit = new ServerFruit(20, 5);
     _gameObjects.push_back(_fruit);
-    _tilemap[20][5].empty = false;
-    _tilemap[20][5].go = _fruit;
-
-    //TODO: SEND FRUIT & PLAYER POSITIONS
+    _tilemap[20][5] = _fruit;
 }
 
 //Updates active GameObjects
 void ServerGame::Update()
 {
-    for(auto* go : _gameObjects) //update gameobjects
+    for(auto* go : _gameObjects)
         go->Update();
 }
 
@@ -50,16 +47,14 @@ void ServerGame::InitPlayers()
     _gameObjects.push_back(player);
     _players.push_back(player);
 
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _gameObjects[0];
+    _tilemap[x][y] = _gameObjects[0]; //player 1 head node
 
     x = 5; y = 19;
     player = new ServerPlayer(x, y, this, 1);
     _gameObjects.push_back(player);
     _players.push_back(player);
 
-    _tilemap[x][y].empty = false; //player head node
-    _tilemap[x][y].go = _gameObjects[1];
+    _tilemap[x][y] = _gameObjects[1]; //player 2 head node
 }
 
 //Sets other player's new input info
@@ -72,13 +67,14 @@ void ServerGame::SetInputInfo(InputInfo* info)
 //Relocates fruit once eaten, chooses new fruit location
 void ServerGame::FruitEaten(int x, int y)
 {
-    _tilemap[x][y] = Tile(); //reset tile
+    _tilemap[x][y] = nullptr; //reset tile
 
-    FruitInfo info = _fruit->Rellocate(this);
+    FruitInfo info = _fruit->Rellocate(this); //new fruit position
 
     SendToClients(Message (Message::FRUIT_EATEN, info));
 }
 
+// Sends message to all clients
 void ServerGame::SendToClients(Message msg)
 {
     _server->SendToClients(msg);
@@ -97,28 +93,32 @@ void ServerGame::InitTilemap()
     _tilemap.resize(width);
     for(int i = 0; i < width; i++)
     {
-        Tile tile;
-        _tilemap[i].resize(height, tile);
+        _tilemap[i].resize(height, nullptr);
     } 
 }
 
 //Returns the tile map info
-std::vector<std::vector<Tile>> ServerGame::GetTilemap()
+std::vector<std::vector<GameObject*>> ServerGame::GetTilemap()
 {
     return _tilemap;
 }
 
 //Modifies info in tile map
-void ServerGame::SetTile(int x, int y, Tile tile)
+void ServerGame::SetTile(int x, int y, GameObject* go)
 {
-    _tilemap[x][y] = tile;
+    _tilemap[x][y] = go;
 }
 
 #pragma endregion
 
 ServerGame::~ServerGame()
 {
-   //TODO: release players
-   //TODO: release tiles
-   //TODO: releas fruit
+    //delete GameObjects allocated memory
+    for (auto go : _gameObjects)
+        delete go;
+
+    _gameObjects.clear();
+    _tilemap.clear();
+    _players.clear();
+    _fruit = nullptr;
 }
