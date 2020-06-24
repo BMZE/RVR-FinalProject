@@ -1,6 +1,6 @@
 #include "Client.h"
-#include "../server/Socket.h"
-#include "../server/Message.h"
+#include "Socket.h"
+#include "Message.h"
 #include "InputInfo.h"
 #include "FruitInfo.h"
 #include <iostream>

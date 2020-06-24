@@ -8,7 +8,7 @@
 #include "Message.h"
 #include "Socket.h"
 #include "InputInfo.h"
-#include "../ServerGame/include/ServerGame.h"
+#include "ServerGame.h"
 
 ServerGame* Server::_game  = nullptr;
 volatile bool Server::_inputRegistered = false;
@@ -20,7 +20,6 @@ Server::Server(const char * s, const char * p)
     _socket->Bind();
 
     _clients.reserve(MAX_PLAYERS);
-    // _playersInput.resize(MAX_PLAYERS);
     _playersInput = new InputInfo[MAX_PLAYERS];
 }
 
