@@ -9,7 +9,8 @@ class Renderer
 public:
 
     /**
-     * Initialises the renderer
+     * Initialises renderer
+     * @return true if initialization failed
      */
     static bool Init();
 
@@ -30,22 +31,23 @@ public:
     static void Release();
 
     /**
-     * Returns screen width
+     * @return screen width
      */
     static inline int GetScreenWidth(){ return _screenWidth; };
 
     /**
-     * Returns screen height
+     * @return screen height
      */
     static inline int GetScreenHeight(){ return _screenHeight; };
 
     /**
-     * Returns the SDL renderer
+     * @return SDL renderer
      */
-    static SDL_Renderer* GetRenderer(); 
+    static inline SDL_Renderer* GetRenderer(){ return _pRenderer; };
 
     /**
-     * Loads and returns an image texture
+     * Loads an image texture
+     * @return image texture 
      */
     static SDL_Texture* LoadImage(const char* path, int* width, int* height);
 

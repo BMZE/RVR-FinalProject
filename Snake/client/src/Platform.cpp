@@ -10,7 +10,6 @@ SDL_Window* Platform::_pWindow = nullptr;
 const int Platform::SCREEN_WIDTH = 600;//800;
 const int Platform::SCREEN_HEIGHT = 400;//600;
 std::list<InputListener*> Platform::_listeners;
-bool Platform::_pause = false;
 
 #pragma endregion
 
@@ -40,6 +39,7 @@ bool Platform::Init()
     return true;
 }
 
+//Registers user input
 bool Platform::Input()
 {
     SDL_Event e;
@@ -49,13 +49,8 @@ bool Platform::Input()
         //Exits program when pressing ESC or X button
         if(e.key.keysym.sym == SDLK_ESCAPE || e.type == SDL_QUIT)
         {
-            //TODO: SEND QUIT TO SERVER
             SDL_Quit();
             return false;
-        }
-        else if(e.key.keysym.sym == SDLK_p && e.type == SDL_KEYDOWN)
-        {
-            _pause = !_pause;
         }
         else
         {
@@ -67,6 +62,7 @@ bool Platform::Input()
     return true;
 }
 
+//Releases the resources used by SDL
 void Platform::Release()
 {
     SDL_DestroyWindow(_pWindow);
@@ -77,6 +73,7 @@ void Platform::Release()
 
 #pragma region EMITTER METHODS
 
+    //Add listener to list
     void Platform::AddListener(InputListener* listener)
     {
         //checks if listener is not in the list
@@ -85,6 +82,7 @@ void Platform::Release()
             _listeners.push_back(listener);
     }
 
+    //Removes specific listener from list
     void Platform::RemoveListener(InputListener* listener)
     {
         //checks if listener is in the list
@@ -93,6 +91,7 @@ void Platform::Release()
             _listeners.remove(listener);
     }
 
+    //Sends the new input info to the input listeners
     void Platform::SendMessage(const SDL_Event& e)
     {
         for(auto listener : _listeners)

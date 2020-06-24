@@ -12,8 +12,7 @@ int Renderer::_screenHeight = 0;
 
 #pragma endregion
 
-#pragma region PUBLIC METHODS
-
+//Initialises renderer
 bool  Renderer::Init()
 {
     SDL_Window* pWindow = Platform::GetWindow();
@@ -32,11 +31,13 @@ bool  Renderer::Init()
     }
 }
 
+// Updates the window to the current display buffer
 void Renderer::Present()
 {
     SDL_RenderPresent(_pRenderer);
 }
 
+//Clears the window by painting it all with one color
 void Renderer::Clear(int color)
 {
     SDL_SetRenderDrawColor(_pRenderer, 
@@ -69,11 +70,6 @@ SDL_Texture* Renderer::LoadImage(const char* path, int* width, int* height)
     return texture;
 }
 
-SDL_Renderer* Renderer::GetRenderer()
-{
-    return _pRenderer; 
-}
-
 //Release SDL renderer resources
 void Renderer::Release()
 {
@@ -81,4 +77,3 @@ void Renderer::Release()
     _pRenderer = nullptr;
 }
 
-#pragma endregion

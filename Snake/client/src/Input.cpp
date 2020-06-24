@@ -14,11 +14,13 @@ InputInfo Input::_inputInfo;
 
 #pragma region SINGLETON
 
+//Initilize input
 void Input::Init()
 {
     _inputListener.Init();
 }
 
+//Registers new input info
 void Input::Tick()
 {
     std::list<SDL_Event>eventList = _inputListener.GetInput();
@@ -34,6 +36,7 @@ void Input::Tick()
     }   
 }
 
+//Returns the frame's input filtered information
 InputInfo Input::GetInputInfo()
 {
     return _inputInfo;
@@ -48,6 +51,7 @@ void Input::Release()
 
 #pragma region KEY MANAGEMENT
 
+//Set key to true if pressed
 void Input::IsKeyDown(const SDL_Event & event)
 {
     
@@ -84,6 +88,7 @@ void Input::IsKeyDown(const SDL_Event & event)
     }
 }
 
+//Set key to false if not pressed anymore
 void Input::IsKeyUp(const SDL_Event & event)
 {
     switch (event.key.keysym.sym)

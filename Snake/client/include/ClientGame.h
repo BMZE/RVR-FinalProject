@@ -1,21 +1,13 @@
 #ifndef _H_ClientGame_H_
 #define _H_ClientGame_H_
 #include <vector>
-#include "InputInfo.h"
 
 //FORWARD DECLARATIONS
 class GameObject;
 class ClientPlayer;
 class ClientFruit;
 struct FruitInfo; 
-//struct InputInfo;
 class Node;
-
-struct Tile //info  in tilemap
-{
-    bool empty = true; //tile state
-    GameObject* go = nullptr; //GameObject in tile if not empty
-};
 
 class ClientGame 
 {
@@ -24,14 +16,9 @@ public:
     ~ClientGame();
 
     /**
-     * Initializes game (tilemap, players, fruit)
+     * Initializes GameObjects
      */
     void Init();
-
-    /**
-     * Updates GameObjects
-     */
-    void Update();
 
     /**
      * Renders GameObjects
@@ -39,47 +26,35 @@ public:
     void Render();
 
     /**
-     * Relocates fruit when the other player has eaten the fruit
+     * Relocates fruit when fruit has changed position
+     * @param info struct position for fruit
      */ 
     void FruitRellocated(FruitInfo* info);
-
+    
     /**
-     * Relocates fruit once eaten
+     * Updates specific snake
+     * @param node snake head 
+     * @param player specific snake to update
      */
-    void FruitEaten(int x, int y);
-
-    /**
-     * @return tile map info
-     */
-    std::vector<std::vector<Tile>> GetTilemap();
-
-    /**
-     * Modifies info in tile mapç
-     */
-    void SetTile(int x, int y, Tile tile);
-
-    void SetInputInfo(InputInfo* info);
-
     void UpdatePlayerSnakeHead(Node* node, int player);
 
+    /**
+     * Adds node to specific snake
+     * @param node new node to add to snake
+     * @param player specific snake to add node to
+     */
     void AddNodeToSnake(Node* node, int player);
-
-    void UpdatePlayerPosition(int player);
 
 private: 
 
-    void InitTilemap(); //Initializes the tile map
+    void InitPlayers(); //Creates players depending if Player 1 || Player 2
 
-    void InitPlayers(); //Creates depending if Player 1 || Player 2
-
-    const int TILE_PIXEL_SIZE = 20; 
-    
-    std::vector<std::vector<Tile>> _tilemap; //game tiles (columns and rows)
-    
+    const int TILE_PIXEL_SIZE = 20; //GameObjects' render size
+        
     std::vector<GameObject*> _gameObjects; //Active GameObjects
 
-    std::vector<ClientPlayer*> _players;
+    std::vector<ClientPlayer*> _players; //Active players
 
-    ClientFruit* _fruit = nullptr;
+    ClientFruit* _fruit = nullptr; 
 };
 #endif

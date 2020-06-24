@@ -3,19 +3,23 @@
 #include <list>
 #include <vector>
 #include "GameObject.h"
-#include "InputInfo.h"
-#include "Node.h"
 
 //FORWARDS DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
 class Node;
-class ClientGame;
 
 class ClientPlayer : public GameObject
 {
 public:
-    ClientPlayer(int x, int y, int size, const char* path, bool player, ClientGame* g);
+
+    /**
+     * @param x coordinate X
+     * @param y coordinate Y
+     * @param path file path for loading image
+     */
+    ClientPlayer(int x, int y, int size, const char* path);
+
     ~ClientPlayer();
 
     /**
@@ -33,31 +37,25 @@ public:
      */
     inline Type GetType(){ return _type; };
 
-    void SetInputInfo(InputInfo* info);
-
     /**
-     * Adds new node to the snake list with correct direction to follow
+     * Adds new node to the snake
+     * @param tail node to add 
      */
     void AddNode(Node* tail); 
 
+    /**
+     * Stores the head new position 
+     * @param head snake front
+     */
     void SetHead(Node* head);
 
-    void SetNewPosition(); //Sets all snake nodes in new tile position
+    /**
+     * Sets all snake nodes in new tile position
+     */
+    void SetNewPosition(); 
 
 
 private:
-
-
-
-    void Input(); //Handles input -> snake direction change
-
-    void Move(); //Set head in new tile position
-
-    void DirectionChange(); //called when snake changes direction, updates nodes current direction
-    
-    bool OnCollision(); //Checks snake's possible collisions
-
-    void DisplayDir(); //debug method for current snake direction
     
     int _xPos; //head node x & y position
     int _yPos;
@@ -66,15 +64,6 @@ private:
     SDL_Rect* _srcRect; //texture source rect
     SDL_Texture* _texture; //image texture
 
-    Node::Direction _direction; //head direction
-
     std::list<Node*> _snake;
-
-    ClientGame* _game; //reference to game instance
-
-    bool _collision = false;
-
-
-    InputInfo _inputInfo;
 };
 #endif

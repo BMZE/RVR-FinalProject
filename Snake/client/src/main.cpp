@@ -6,7 +6,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include "Client.h"
-
+#include "InputInfo.h"
 
 int main() 
 {
@@ -55,7 +55,6 @@ int main()
         if (elapsedTime > maxPeriod)
 		{
             Client::SendInput(Input::GetInputInfo());
-            //game.Update(); //update objects
             lastFrameTime = currentTime;
         }
 

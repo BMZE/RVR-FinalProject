@@ -6,14 +6,22 @@
 //FORWARD DECLARATIONS
 class SDL_Texture;
 class SDL_Rect;
-class ClientGame;
-class FruitInfo;
 
 class ClientFruit : public GameObject 
 {
 public:
 
+    /**
+     * @param x coordinate X
+     * @param y coordinate Y
+     * @param size render size for texture
+     * @param path file path for loading texture
+     */
     ClientFruit(int x, int y, int size, const char* path);
+
+    /**
+     * Destroy resources
+     */
     ~ClientFruit();
 
     /**
@@ -27,18 +35,16 @@ public:
     void Render();
 
     /**
-     * @return Type of GameObject (snake/fruit/...)
+     * Sets fruit position
+     * @param x X coordinate
+     * @param y Y coordinate
      */
-    inline Type GetType(){ return _type; };
+    void SetNewPosition(int x, int y);
 
     /**
-     * When fruit is eaten, fruit changes position
+     * @return Type of GameObject (fruit)
      */
-    FruitInfo Rellocate(ClientGame* g);
-
-    FruitInfo GetPosition();
-
-    void SetNewPosition(int x, int y, ClientGame* g);
+    inline Type GetType(){ return _type; };
     
 private:
 

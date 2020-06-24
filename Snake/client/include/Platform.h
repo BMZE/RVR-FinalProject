@@ -20,6 +20,7 @@ public:
 
     /**
      * Registers user input
+     * @return true if SDL_Quit
      */
     bool static Input();
 
@@ -33,14 +34,14 @@ public:
 #pragma region EMITTER METHODS
 
     /**
-     * 
-     * @param listener
+     * Add listener to list
+     * @param listener to add
      */
     static void AddListener(InputListener* listener);
 
     /**
-     * 
-     * @param listener
+     * Removes specific listener from list
+     * @param listener to remove
      */
     static void RemoveListener(InputListener* listener);
 
@@ -58,8 +59,6 @@ public:
     inline static SDL_Window* GetWindow() { return _pWindow; };
 
 
-    inline static bool IsPaused() { return _pause; }; 
-
 private:
 
     //Screen width & height
@@ -69,7 +68,5 @@ private:
     static SDL_Window* _pWindow; 
 
     static std::list<InputListener*> _listeners;
-
-    static bool _pause;
 };
 #endif

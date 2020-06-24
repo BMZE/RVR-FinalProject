@@ -17,6 +17,7 @@ char Client::_id = '0';
 
 #pragma endregion
 
+//Initializes client's resources for connection with server
 void Client::Init(const char * s, const char * p, ClientGame* g)
 {
     _socket = new Socket(s, p);
@@ -33,38 +34,42 @@ void Client::Init(const char * s, const char * p, ClientGame* g)
     if(res != 0)
         std::cout << "Error, Thread was not created\n";
 
-    Login();
+    Login(); //login to server
 }
+
+#pragma region SEND MESSAGES
 
 //Login to game server
 void Client::Login()
 {
-    Message msg;
-    msg._type = Message::LOGIN;
+    Message msg(Message::LOGIN);
     _socket->send(msg, *_socket);   
 }
 
 //Logout from game server
 void Client::Logout()
 {
-    Message msg;
-    msg._type = Message::LOGOUT;
+    Message msg(Message::LOGOUT);
     _socket->send(msg, *_socket);  
 }
 
-//If direction has changed, sends new input to server
+//Send input state to server
 void Client::SendInput(InputInfo info)
 {
     Message msg(Message::INPUT, info, _id);
     _socket->send(msg, *_socket);
 }
 
+//Notify server game is ready to start
 void Client::SendGameReady()
 {
     Message msg(Message::READY);
     _socket->send(msg, *_socket);
 }
 
+#pragma endregion
+
+//Method for receiving messages through thread
 void* Client::net_thread(void*)
 {
     while (true)
@@ -73,24 +78,24 @@ void* Client::net_thread(void*)
         Message msg;
         _socket->recv(msg, server);
 
-        if (msg._type == Message::FRUIT_EATEN)
+        if (msg._type == Message::FRUIT_EATEN) //fruit
         {
            _game->FruitRellocated(&msg._fruitInfo);
         }
-        else if(msg._type == Message::NODE)
+        else if(msg._type == Message::NODE) //snake head 
         {
             _game->UpdatePlayerSnakeHead(msg._node, (msg._player - '0'));
         }
-        else if(msg._type == Message::ADD_NODE)
+        else if(msg._type == Message::ADD_NODE) //add node to snake
         {
             _game->AddNodeToSnake(msg._node,(msg._player - '0'));
         }
-        else if(msg._type == Message::INIT)
+        else if(msg._type == Message::INIT) //game init
         {
             _id = msg._player;
             _initGame = true;
         }
-        else if(msg._type == Message::START)
+        else if(msg._type == Message::START) //game start
         {
             _startGame = true;
         }
@@ -98,6 +103,7 @@ void* Client::net_thread(void*)
     
 }
 
+//Releases resources
 void Client::Release()
 {
     Logout();

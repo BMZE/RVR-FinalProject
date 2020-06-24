@@ -10,12 +10,12 @@ class Input
 public:
 
     /**
-     * Initializes
+     * Initilize input
      */
     static void Init();
 
     /**
-     * 
+     * Registers new input info
      */
     static void Tick();
 
@@ -25,14 +25,22 @@ public:
     static void Release();
 
     /**
-     * Returns the frame's input filtered information
+     * @return the frame's input filtered information
      */ 
     static InputInfo GetInputInfo();
 
 private:
 
+    /**
+     * Set key to true if pressed
+     * @param event SDL event with key info
+     */
     static void IsKeyDown(const SDL_Event & event);
 
+    /**
+     * Set key to false if not pressed anymore
+     * @param event SDL event with key info
+     */
     static void IsKeyUp(const SDL_Event & event);
 
     static InputListener _inputListener;

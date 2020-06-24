@@ -9,10 +9,23 @@ class ClientGame;
 class Client
 {
 public:
+
+    /**
+     * Initializes client's resources for connection with server
+     * @param s ip to connect socket to
+     * @param p port to connect socket to
+     * @param g game reference 
+     */
     static void Init(const char * s, const char * p, ClientGame* g);
 
+    /**
+     * Releases resources
+     */
     static void Release();
 
+    /**
+     * Method for receiving messages through thread
+     */
     static void* net_thread(void*);
 
     /**
@@ -26,7 +39,7 @@ public:
     static void Logout(); 
 
     /**
-     * If direction has changed, sends new input to server
+     * Send input state to server
      * @param info InputInfo with frame's input information
      */
     static void SendInput(InputInfo info);
@@ -37,10 +50,19 @@ public:
      */
     static void SendGameReady();
 
+    /**
+     * @return if ready to start game
+     */
     static inline bool StartGame(){ return _startGame; };
 
+    /**
+     * @return if ready to initilize game as player id has been registered
+     */
     static inline bool InitGame(){ return _initGame; };
 
+    /**
+     * @return player id -> Player 1 or Player 2
+     */
     static inline char GetID() { return _id; };
 
 private:
@@ -49,6 +71,6 @@ private:
     static volatile bool _initGame; 
 
     static ClientGame* _game;
-    static char _id;
+    static char _id; //player id -> Player 1 or Player 2 -> values: (0,1)
 };
 #endif
