@@ -17,7 +17,7 @@ InputInfo Input::_inputInfo;
 //Initilize input
 void Input::Init()
 {
-    _inputListener.Init();
+   _inputListener.Init();
 }
 
 //Registers new input info
@@ -44,7 +44,6 @@ InputInfo Input::GetInputInfo()
 
 void Input::Release()
 {
-
 }
 
 #pragma endregion

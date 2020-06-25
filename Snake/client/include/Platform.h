@@ -12,26 +12,27 @@ class Platform
 
 public:
 
-#pragma region PLATFORM SETUP
     /**
      * Creates the SDL window
      */
-    bool static Init();
+    static bool Init();
 
     /**
-     * Registers user input
-     * @return true if SDL_Quit
+     * Registers user input and sends it to input listeners
+     * @return false if application is closed, if SDL_Quit
      */
-    bool static Input();
+    static bool Tick();
 
     /**
      * Releases the resources used by SDL
      */
-    void static Release(); 
+    static void Release(); 
 
-#pragma endregion
-
-#pragma region EMITTER METHODS
+    /**
+     * Waits for n milliseconds
+     * @param ms amount of milliseconds to wait
+     */
+    static void Delay(uint32_t ms);
 
     /**
      * Add listener to list
@@ -50,8 +51,6 @@ public:
      * @param e SDL_Event with the input info
      */
     static void SendMessage(const SDL_Event& e);
-
-#pragma endregion
 
     /**
      * Returns sdl window

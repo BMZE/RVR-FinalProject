@@ -13,7 +13,7 @@ std::list<InputListener*> Platform::_listeners;
 
 #pragma endregion
 
-#pragma region PLATFORM SETUP
+#pragma region SINGLETON
 
 //Creates SDL window
 bool Platform::Init()
@@ -39,8 +39,8 @@ bool Platform::Init()
     return true;
 }
 
-//Registers user input
-bool Platform::Input()
+//Registers user input and sends it to input listeners
+bool Platform::Tick()
 {
     SDL_Event e;
 
@@ -54,7 +54,7 @@ bool Platform::Input()
         }
         else
         {
-            SendMessage(e);
+            SendMessage(e); //send message to inputlisteners
         }
         
     }
@@ -67,6 +67,12 @@ void Platform::Release()
 {
     SDL_DestroyWindow(_pWindow);
     _pWindow = nullptr;
+}
+
+//Waits for n milliseconds
+void Platform::Delay(uint32_t ms)
+{
+    SDL_Delay(ms);
 }
 
 #pragma endregion
@@ -88,7 +94,7 @@ void Platform::Release()
         //checks if listener is in the list
         auto it = std::find(_listeners.begin(), _listeners.end(), listener);
         if(it != _listeners.end())
-            _listeners.remove(listener);
+            _listeners.erase(it);
     }
 
     //Sends the new input info to the input listeners

@@ -8,6 +8,7 @@
 #include "Client.h"
 #include "InputInfo.h"
 
+
 int main() 
 {
     std::cout << "Initializing...\n";
@@ -19,50 +20,46 @@ int main()
         return 1;
     Input::Init();
 
-    srand(time(0)); //random seed
-    clock_t currentTime = 0;
-	double lastFrameTime = 0;
-	double elapsedTime = 0;
-
-    float rate = 60.0f; //FPS
-	double maxPeriod = 1.0 / rate;
-
     ClientGame game; 
     Client::Init("127.0.0.1", "7777", &game);
 
-    while(!Client::InitGame());
+    bool applicationClosed = false;
+    
+    while(!Client::InitGame() && !applicationClosed) 
+    {    
+        if(!Platform::Tick()) 
+            applicationClosed = true;
+    }
 
-    game.Init(); //initialize GameObjects
-
-    std::cout << "Waiting for other players\n";
-
-    Client::SendGameReady(); //game is ready 
-
-    while(!Client::StartGame()); //wait until server is ready
-
-    std::cout << "Start game\n";
-
-    //game loop
-    while(Platform::Input())
+    if(!applicationClosed)
     {
-        currentTime = clock();
-		elapsedTime = (currentTime - lastFrameTime) / 1000;
+        game.Init(); //initialize GameObjects
 
-        //Input
-        Input::Tick(); //register input
+        std::cout << "Waiting for other players\n";
 
-        //Update
-        if (elapsedTime > maxPeriod)
-		{
-            Client::SendInput(Input::GetInputInfo());
-            lastFrameTime = currentTime;
+        Client::SendGameReady(); //game is ready 
+
+        while(!Client::StartGame() && !applicationClosed) //wait until server is ready
+        {
+            if(!Platform::Tick()) 
+                applicationClosed = true;
         }
 
-        //Render
-        Renderer::Clear(0); //clears last frame
-        game.Render();  //render new frame
-        Renderer::Present(); //display the new frame buffer  
-        SDL_Delay(125);      
+        std::cout << "Start game\n";
+
+        //game loop
+        while(!applicationClosed && Platform::Tick())
+        {
+            Input::Tick(); //register input
+    
+            Client::SendInput(Input::GetInputInfo());
+    
+            //Render
+            Renderer::Clear(0); //clears last frame
+            game.Render();  //render new frame
+            Renderer::Present(); //display the new frame buffer  
+            Platform::Delay(125);      
+        }
     }
 
     //Release client resources

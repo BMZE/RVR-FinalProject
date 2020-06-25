@@ -17,6 +17,12 @@ public:
     void Init();
 
     /**
+     * Removes listener from platform list
+     * prevents double free
+     */
+    void Release();
+
+    /**
      * Saves the input event
      * @param event input event stored in list
      */
