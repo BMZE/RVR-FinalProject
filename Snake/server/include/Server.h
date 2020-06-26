@@ -61,6 +61,8 @@ private:
 
     static volatile bool _inputRegistered; //set to true when al player input is collected for update
 
+    static volatile bool _gameEnd; //when there are not enough clients to run game, true
+
     static InputInfo* _playersInput; //collects all player input
 };
 #endif

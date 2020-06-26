@@ -15,6 +15,7 @@
 ServerGame* Server::_game  = nullptr;
 volatile bool Server::_inputRegistered = false;
 InputInfo* Server::_playersInput = nullptr;
+volatile bool Server::_gameEnd = false;
 
 #pragma endregion
 
@@ -51,6 +52,7 @@ void Server::ProcessMessages()
                     Message ms(Message::INIT); //notify client to init game and send player id 
                     ms._player = (_clients.size() - 1) + '0'; //client is last player to join
                     _socket->send(ms, *client);
+                    if(_gameEnd) _gameEnd = false;
                 }
                 else
                 {
@@ -93,6 +95,9 @@ void Server::ProcessMessages()
                         break;
                     }
                 }
+                _gameEnd = true;
+                playersReady = 0;
+                inputRecv = 0;
             break;
         }
     }
@@ -127,7 +132,7 @@ void Server::CreateGameThread()
 //Thread function that runs the game server side
 void* Server::RunGame(void*)
 {
-    while (true)
+    while (!_gameEnd)
     {
         if(_inputRegistered)
         {
@@ -136,7 +141,7 @@ void* Server::RunGame(void*)
             _game->Update();
         }
     }
-
+    pthread_exit(NULL);
 }
 
 Server::~Server()

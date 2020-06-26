@@ -16,12 +16,19 @@ Message::Message(const uint8_t type, const FruitInfo &info) //FRUIT_EATEN
 Message::Message(const uint8_t type, Node* node, char player) //NODE, ADD_NODE
     : _type(type), _node(node), _player(player){}
 
+
+//Allocates dinamyc memory for _data
+void Message::AllocData(size_t size)
+{
+    _data = new char[size];
+    _size = size; 
+}
+
 void Message::to_bin()
 {
     if(_type == INPUT) //package input info
     {
-        _data = new char[INPUT_SIZE];
-        _size = INPUT_SIZE; 
+        AllocData(current.input.INPUT_SIZE); 
         char* tmp = _data; 
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
@@ -34,8 +41,7 @@ void Message::to_bin()
     }
     else if(_type == FRUIT_EATEN) //package fruit info
     {
-        _size = FRUIT_SIZE;
-        _data = new char[FRUIT_SIZE];
+        AllocData(current.fruit.FRUIT_SIZE);
         
         char* tmp = _data;
 
@@ -46,8 +52,7 @@ void Message::to_bin()
     }
     else if(_type == Message::INIT || _type == Message::LOGOUT) //package init/logout info
     {
-        _size = sizeof(uint8_t) + sizeof(char);
-        _data = new char[_size];
+        AllocData(sizeof(uint8_t) + sizeof(char));        
         
         char* tmp = _data;
 

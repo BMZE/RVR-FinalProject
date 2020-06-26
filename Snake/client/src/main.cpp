@@ -58,8 +58,8 @@ int main()
             Renderer::Clear(0); //clears last frame
             game.Render();  //render new frame
             Renderer::Present(); //display the new frame buffer  
-            //Platform::Delay(125); 
-            Platform::Delay(150);                
+            Platform::Delay(125); 
+            //Platform::Delay(150);                
         }
     }
 

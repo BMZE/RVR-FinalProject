@@ -10,10 +10,14 @@ class Node;
 class Message
 {
 public:
+
+    /**
+     * Constructors for different types of message
+     */
     Message();
     Message(const uint8_t type);
-    Message(const uint8_t type, const InputInfo &info, char player);
     Message(const uint8_t type, const FruitInfo &info);
+    Message(const uint8_t type, const InputInfo &info, char player);
     Message(const uint8_t type, Node* node, char player);
 
     ~Message();
@@ -34,6 +38,9 @@ public:
      */
     inline int32_t size() { return _size; };
 
+    /**
+     * Possible types of message
+     */
     enum MessageType { LOGIN, INIT, READY, START, INPUT, NODE, ADD_NODE, UPDATE_PLAYER_POSITION,
         FRUIT_EATEN, LOGOUT };
 
@@ -47,8 +54,12 @@ public:
 
 private:
 
-    static const size_t INPUT_SIZE = sizeof(InputInfo) + sizeof(uint8_t) + sizeof(char) * 2;
-    static const size_t FRUIT_SIZE = sizeof(FruitInfo) + sizeof(uint8_t) + (sizeof(char) * 2);
+    /**
+     * Allocates dinamyc memory for _data
+     * @param size of memory to alloc
+     */
+    void AllocData(size_t size);
+
 
     int32_t _size = 0;
 

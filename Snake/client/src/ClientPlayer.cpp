@@ -36,14 +36,13 @@ void ClientPlayer::SetHead(Node* head)
 }
 
 //Adds node after tail
-void ClientPlayer::AddNode(Node* node)
+void ClientPlayer::AddNode(Node* tail)
 {
-    Node* tail = node;
+    Node* node = tail;
     //set father & next nodes 
-    _snake.back()->next = tail;
-    tail->father = _snake.back();
-    tail->UpdateDirections();
-    _snake.push_back(tail);    
+    _snake.back()->next = node;
+    node->father = _snake.back();
+    _snake.push_back(node);    
 }
 
 //Sets all snake nodes in new position

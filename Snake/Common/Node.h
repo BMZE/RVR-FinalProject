@@ -37,8 +37,9 @@ public:
 
     std::string toString()
     {
-        std::string str = std::to_string(x) + '\0' + std::to_string(y) + '\0'
-            + std::to_string(lastDirecion) + std::to_string(currentDirection) + '\0';
+        std::string str = std::to_string(x) + '\0' 
+            + std::to_string(y) + '\0';
+            // + std::to_string(lastDirecion) + std::to_string(currentDirection) + '\0';
         
         return str;
     }
@@ -57,8 +58,8 @@ public:
 
         y = std::stoi(aux);
 
-        i++; lastDirecion = (Node::Direction)(str[i] - '0');
-        i++; currentDirection = (Node::Direction)(str[i] - '0');
+        // i++; lastDirecion = (Node::Direction)(str[i] - '0');
+        // i++; currentDirection = (Node::Direction)(str[i] - '0');
     }
 };
 #endif
