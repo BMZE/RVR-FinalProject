@@ -43,7 +43,6 @@ private:
      */
     static void* RunGame(void*);
 
-
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket

@@ -52,7 +52,8 @@ void Server::ProcessMessages()
                     Message ms(Message::INIT); //notify client to init game and send player id 
                     ms._player = (_clients.size() - 1) + '0'; //client is last player to join
                     _socket->send(ms, *client);
-                    if(_gameEnd) _gameEnd = false;
+
+                    if(_gameEnd) _gameEnd = false; //game thread can run
                 }
                 else
                 {
@@ -132,7 +133,8 @@ void Server::CreateGameThread()
 //Thread function that runs the game server side
 void* Server::RunGame(void*)
 {
-    while (!_gameEnd)
+    /// ***     FOR TEST: COMMENT PLAYER LOST CONDITION    *** ///
+    while (!_gameEnd && !_game->PlayerLost())
     {
         if(_inputRegistered)
         {

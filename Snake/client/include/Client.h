@@ -67,8 +67,8 @@ public:
 
 private:
     static Socket* _socket;
-    static volatile bool _startGame;
-    static volatile bool _initGame; 
+    static volatile bool _startGame; //true to start game
+    static volatile bool _initGame; //true to init game once player id has been saved
 
     static ClientGame* _game;
     static char _id; //player id -> Player 1 or Player 2 -> values: (0,1)

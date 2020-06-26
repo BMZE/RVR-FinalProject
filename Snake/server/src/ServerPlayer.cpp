@@ -27,6 +27,8 @@ void ServerPlayer::Update()
         Move(); //next snake pos
         if(!OnCollision()) //if next tile is available for movement
             SetNewPosition(); //set snake to next tile
+        else 
+            _game->PlayerCollided();
     }   
 }
 

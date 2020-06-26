@@ -56,6 +56,16 @@ public:
      */
     void SendToClients(Message msg);
 
+    /**
+     * @return true if a player has collided
+     */
+    inline bool PlayerLost(){ return _gameLost; };
+
+    /**
+     * Call to make when a snake has collided
+     */
+    void PlayerCollided();
+
 private: 
     
     void InitTilemap(); //Initializes the tile map
@@ -71,5 +81,7 @@ private:
     ServerFruit* _fruit = nullptr;
 
     Server* _server = nullptr;
+
+    bool _gameLost = false; //true when a player has collided
 };
 #endif

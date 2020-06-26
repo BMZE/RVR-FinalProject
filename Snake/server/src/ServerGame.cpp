@@ -36,6 +36,9 @@ void ServerGame::Update()
         go->Update();
 }
 
+
+#pragma region PLAYER MANAGEMENT
+
 //Creates depending if Player 1 || Player 2
 void ServerGame::InitPlayers()
 {
@@ -57,12 +60,20 @@ void ServerGame::InitPlayers()
     _tilemap[x][y] = _gameObjects[1]; //player 2 head node
 }
 
+//Call to make when a snake has collided
+void ServerGame::PlayerCollided()
+{
+    _gameLost = true;
+}
+
 //Sets other player's new input info
 void ServerGame::SetInputInfo(InputInfo* info)
 {
     for(int i = 0; i < _players.size(); i++)
         _players[i]->SetInputInfo(&info[i]);
 } 
+
+#pragma endregion
 
 //Relocates fruit once eaten, chooses new fruit location
 void ServerGame::FruitEaten(int x, int y)
