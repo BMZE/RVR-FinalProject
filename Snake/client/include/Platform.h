@@ -32,7 +32,7 @@ public:
      * Waits for n milliseconds
      * @param ms amount of milliseconds to wait
      */
-    static void Delay(uint32_t ms);
+    static void Delay(int ms);
 
     /**
      * Add listener to list

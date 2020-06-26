@@ -58,7 +58,8 @@ int main()
             Renderer::Clear(0); //clears last frame
             game.Render();  //render new frame
             Renderer::Present(); //display the new frame buffer  
-            Platform::Delay(125);      
+            //Platform::Delay(125); 
+            Platform::Delay(150);                
         }
     }
 
@@ -66,9 +67,11 @@ int main()
     Client::Release();
 
     //Release SDL
-    Input::Release();
+    Input::Release();   
     Renderer::Release();
     Platform::Release();
         
+    std::cout << "Game closed\n";
+
     return 0;
 }

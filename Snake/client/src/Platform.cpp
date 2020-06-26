@@ -70,7 +70,7 @@ void Platform::Release()
 }
 
 //Waits for n milliseconds
-void Platform::Delay(uint32_t ms)
+void Platform::Delay(int ms)
 {
     SDL_Delay(ms);
 }
