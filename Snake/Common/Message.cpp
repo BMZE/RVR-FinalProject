@@ -28,7 +28,7 @@ void Message::to_bin()
 {
     if(_type == INPUT) //package input info
     {
-        AllocData(current.input.INPUT_SIZE); 
+        AllocData(sizeof(uint8_t) + sizeof(char) * (sizeof(InputInfo) + 1)); 
         char* tmp = _data; 
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
@@ -41,7 +41,7 @@ void Message::to_bin()
     }
     else if(_type == FRUIT_EATEN) //package fruit info
     {
-        AllocData(current.fruit.FRUIT_SIZE);
+        AllocData(sizeof(uint8_t) + sizeof(char) * (sizeof(FruitInfo) + 2));
         
         char* tmp = _data;
 
@@ -62,10 +62,8 @@ void Message::to_bin()
     }
     else if(_type == Message::NODE)
     {
-        _size = sizeof(uint8_t) + sizeof(char) * (sizeof(Node) + 4);
-        _data = new char[_size];
-
-         char* tmp = _data;
+        AllocData(sizeof(uint8_t) + sizeof(char) * (sizeof(Node) + 4));
+        char* tmp = _data;
 
         memcpy((void*)tmp, (void*)&_type, sizeof(uint8_t));
         tmp += sizeof(uint8_t);
@@ -75,8 +73,7 @@ void Message::to_bin()
     }
     else //LOGIN OR START
     {
-        _data = new char[sizeof(uint8_t)];
-        _size = sizeof(uint8_t);
+        AllocData(sizeof(uint8_t));
         memcpy((void*)_data, (void*)&_type, sizeof(uint8_t));
     }
     
